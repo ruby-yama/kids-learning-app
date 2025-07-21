@@ -1,0 +1,88 @@
+
+[
+    {
+        "question": "「いぬ」はどっち？",
+        "question_audio": "assets/sounds/dog_question.mp3",
+        "options": [
+            {
+                "name": "いぬ",
+                "image": "assets/images/dog.png",
+                "audio": "assets/sounds/dog.mp3"
+            },
+            {
+                "name": "ねこ",
+                "image": "assets/images/cat.png",
+                "audio": "assets/sounds/cat.mp3"
+            }
+        ],
+        "answer": "いぬ"
+    },
+    {
+        "question": "「りんご」はどっち？",
+        "question_audio": "assets/sounds/apple_question.mp3",
+        "options": [
+            {
+                "name": "みかん",
+                "image": "assets/images/orange.png",
+                "audio": "assets/sounds/orange.mp3"
+            },
+            {
+                "name": "りんご",
+                "image": "assets/images/apple.png",
+                "audio": "assets/sounds/apple.mp3"
+            }
+        ],
+        "answer": "りんご"
+    },
+    {
+        "question": "「さん」はどっち？",
+        "question_audio": "assets/sounds/three_question.mp3",
+        "options": [
+            {
+                "name": "いち",
+                "image": "assets/images/one.png",
+                "audio": "assets/sounds/one.mp3"
+            },
+            {
+                "name": "さん",
+                "image": "assets/images/three.png",
+                "audio": "assets/sounds/three.mp3"
+            }
+        ],
+        "answer": "さん"
+    },
+    {
+        "question": "「あか」はどっち？",
+        "question_audio": "assets/sounds/red_question.mp3",
+        "options": [
+            {
+                "name": "あか",
+                "image": "assets/images/red.png",
+                "audio": "assets/sounds/red.mp3"
+            },
+            {
+                "name": "あお",
+                "image": "assets/images/blue.png",
+                "audio": "assets/sounds/blue.mp3"
+            }
+        ],
+        "answer": "あか"
+    },
+    {
+        "question": "「くるま」はどっち？",
+        "question_audio": "assets/sounds/car_question.mp3",
+        "options": [
+            {
+                "name": "でんしゃ",
+                "image": "assets/images/train.png",
+                "audio": "assets/sounds/train.mp3"
+            },
+            {
+                "name": "くるま",
+                "image": "assets/images/car.png",
+                "audio": "assets/sounds/car.mp3"
+            }
+        ],
+        "answer": "くるま"
+    }
+]
