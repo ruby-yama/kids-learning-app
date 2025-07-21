@@ -12,9 +12,23 @@
             <h1>がくしゅうアプリ</h1>
             <button id="start-button">スタート</button>
         </div>
+        <div id="game-selection-screen" class="screen">
+            <h2>どのゲームであそぶ？</h2>
+            <button class="game-select-button" data-game-type="multiple-choice">えらぶゲーム</button>
+            <button class="game-select-button" data-game-type="line-drawing">せんつなぎゲーム</button>
+            <button class="game-select-button" data-game-type="maze">めいろゲーム</button>
+        </div>
         <div id="question-screen" class="screen">
             <div id="question-container"></div>
             <div id="options-container"></div>
+        </div>
+        <div id="line-drawing-screen" class="screen">
+            <h2>なかまをみつけて せんでつなごう！</h2>
+            <canvas id="line-drawing-canvas"></canvas>
+        </div>
+        <div id="maze-screen" class="screen">
+            <h2>ゴールをめざそう！</h2>
+            <canvas id="maze-canvas"></canvas>
         </div>
         <div id="reward-screen" class="screen">
             <h1>よくできました！</h1>
