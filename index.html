@@ -32,7 +32,17 @@
         </div>
         <div id="maze-screen" class="screen">
             <h2>ゴールをめざそう！</h2>
-            <canvas id="maze-canvas" width="500" height="300"></canvas>
+            <div class="maze-container">
+                <canvas id="maze-canvas" width="500" height="300"></canvas>
+                <div id="maze-controls">
+                    <button class="maze-control-button" data-direction="ArrowUp">↑</button>
+                    <div>
+                        <button class="maze-control-button" data-direction="ArrowLeft">←</button>
+                        <button class="maze-control-button" data-direction="ArrowDown">↓</button>
+                        <button class="maze-control-button" data-direction="ArrowRight">→</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="counting-screen" class="screen">
             <div id="counting-question-container"></div>

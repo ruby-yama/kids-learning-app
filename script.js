@@ -1,3 +1,4 @@
+
 const startButton = document.getElementById('start-button');
 const retryButton = document.getElementById('retry-button');
 const startScreen = document.getElementById('start-screen');
@@ -286,37 +287,76 @@ function getClickedItem(x, y) {
     );
 }
 
-lineDrawingCanvas.addEventListener('click', (e) => {
-    if (!lineDrawingScreen.classList.contains('active')) return;
+let isDrawing = false;
+let currentLine = {};
 
+function getPointerPosition(e) {
     const rect = lineDrawingCanvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+        x: clientX - rect.left,
+        y: clientY - rect.top
+    };
+}
 
-    const clickedItem = getClickedItem(x, y);
+lineDrawingCanvas.addEventListener('pointerdown', (e) => {
+    if (!lineDrawingScreen.classList.contains('active')) return;
+    e.preventDefault();
+    const pos = getPointerPosition(e);
+    const clickedItem = getClickedItem(pos.x, pos.y);
 
     if (clickedItem) {
-        if (!lineDrawingState.selectedItem) {
-            lineDrawingState.selectedItem = clickedItem;
-        } else {
-            if (clickedItem.id === lineDrawingState.selectedItem.matchId) {
-                clickedItem.matched = true;
-                lineDrawingState.selectedItem.matched = true;
-                lineDrawingState.lines.push({ start: lineDrawingState.selectedItem, end: clickedItem });
-                playAudio('assets/sounds/correct.mp3'); // Placeholder for correct sound
-                lineDrawingState.selectedItem = null;
-
-                if (lineDrawingState.lines.length === lineDrawingState.items.length / 2) {
-                    setTimeout(() => showScreen('reward'), 800);
-                }
-            } else {
-                playAudio('assets/sounds/incorrect.mp3'); // Placeholder for incorrect sound
-                lineDrawingState.selectedItem = null;
-            }
-        }
-        drawLineDrawingBoard();
+        isDrawing = true;
+        lineDrawingState.selectedItem = clickedItem;
+        currentLine = { start: clickedItem, end: pos };
     }
 });
+
+lineDrawingCanvas.addEventListener('pointermove', (e) => {
+    if (!isDrawing || !lineDrawingScreen.classList.contains('active')) return;
+    e.preventDefault();
+    const pos = getPointerPosition(e);
+    currentLine.end = pos;
+    drawLineDrawingBoard();
+    
+    const { start, end } = currentLine;
+    lineDrawingCtx.beginPath();
+    lineDrawingCtx.moveTo(start.x, start.y);
+    lineDrawingCtx.lineTo(end.x, end.y);
+    lineDrawingCtx.strokeStyle = '#007bff';
+    lineDrawingCtx.lineWidth = 6;
+    lineDrawingCtx.stroke();
+});
+
+lineDrawingCanvas.addEventListener('pointerup', (e) => {
+    if (!isDrawing || !lineDrawingScreen.classList.contains('active')) return;
+    e.preventDefault();
+    const pos = getPointerPosition(e);
+    const targetItem = getClickedItem(pos.x, pos.y);
+
+    if (targetItem && lineDrawingState.selectedItem && targetItem.id === lineDrawingState.selectedItem.matchId) {
+        targetItem.matched = true;
+        lineDrawingState.selectedItem.matched = true;
+        lineDrawingState.lines.push({ start: lineDrawingState.selectedItem, end: targetItem });
+        playAudio('assets/sounds/correct.mp3');
+
+        if (lineDrawingState.lines.length === lineDrawingState.items.length / 2) {
+            setTimeout(() => showScreen('reward'), 500);
+        }
+    } else {
+        if (lineDrawingState.selectedItem) {
+             playAudio('assets/sounds/incorrect.mp3');
+        }
+    }
+    
+    isDrawing = false;
+    lineDrawingState.selectedItem = null;
+    currentLine = {};
+    drawLineDrawingBoard();
+});
+
+lineDrawingCanvas.style.touchAction = 'none';
 
 // --- Maze Game ---
 
@@ -348,6 +388,13 @@ function initMazeGame(question) {
 
     drawMaze();
     window.addEventListener('keydown', handleMazeKeyPress);
+
+    document.querySelectorAll('.maze-control-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const direction = e.target.dataset.direction;
+            movePlayer(direction);
+        });
+    });
 }
 
 function drawMaze() {
@@ -363,20 +410,19 @@ function drawMaze() {
         }
     }
 
-    // Draw Player
     ctx.fillStyle = '#FF0000';
     ctx.beginPath();
     ctx.arc(playerPos.x * tileSize + tileSize / 2, playerPos.y * tileSize + tileSize / 2, tileSize / 3, 0, Math.PI * 2);
     ctx.fill();
 }
 
-function handleMazeKeyPress(e) {
+function movePlayer(direction) {
     if (!mazeScreen.classList.contains('active')) return;
 
     let { x, y } = mazeState.playerPos;
     const { map } = mazeState;
 
-    switch (e.key) {
+    switch (direction) {
         case 'ArrowUp': y--; break;
         case 'ArrowDown': y++; break;
         case 'ArrowLeft': x--; break;
@@ -384,18 +430,25 @@ function handleMazeKeyPress(e) {
         default: return;
     }
 
-    e.preventDefault();
-
     if (map[y] && map[y][x] !== 1) {
         mazeState.playerPos = { x, y };
         drawMaze();
 
         if (map[y][x] === 'G') {
             window.removeEventListener('keydown', handleMazeKeyPress);
+            document.querySelectorAll('.maze-control-button').forEach(button => button.disabled = true);
             playAudio('assets/sounds/correct.mp3');
-            setTimeout(() => showScreen('reward'), 500);
+            setTimeout(() => {
+                showScreen('reward');
+                document.querySelectorAll('.maze-control-button').forEach(button => button.disabled = false);
+            }, 500);
         }
     }
+}
+
+function handleMazeKeyPress(e) {
+    e.preventDefault();
+    movePlayer(e.key);
 }
 
 // --- Counting Game ---
@@ -407,7 +460,6 @@ function showCountingQuestion() {
         playAudio(question.question_audio);
     }
 
-    // Display items to count
     let itemsHtml = '<div class="counting-items-grid">';
     for (let i = 0; i < question.item_count; i++) {
         itemsHtml += `<img src="${question.item_image}" alt="item" class="counting-item">`;
@@ -415,7 +467,6 @@ function showCountingQuestion() {
     itemsHtml += '</div>';
     countingQuestionContainer.innerHTML += itemsHtml;
 
-    // Display options
     countingOptionsContainer.innerHTML = '';
     const shuffledOptions = question.options.sort(() => 0.5 - Math.random());
 
