@@ -1,4 +1,3 @@
-
 const startButton = document.getElementById('start-button');
 const retryButton = document.getElementById('retry-button');
 const startScreen = document.getElementById('start-screen');
@@ -9,6 +8,9 @@ const mazeScreen = document.getElementById('maze-screen');
 const rewardScreen = document.getElementById('reward-screen');
 const questionContainer = document.getElementById('question-container');
 const optionsContainer = document.getElementById('options-container');
+const countingScreen = document.getElementById('counting-screen');
+const countingQuestionContainer = document.getElementById('counting-question-container');
+const countingOptionsContainer = document.getElementById('counting-options-container');
 
 // --- Canvas setup ---
 const lineDrawingCanvas = document.getElementById('line-drawing-canvas');
@@ -71,12 +73,13 @@ async function startGame(gameType) {
         showScreen('line-drawing');
         initLineDrawingGame(currentQuestions[0]);
     } else if (gameType === 'maze') {
+        if(currentQuestions.length === 0) return;
         showScreen('maze');
-        const canvas = document.getElementById('maze-canvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.font = "20px sans-serif";
-        ctx.fillText("めいろゲームはまだ作られていません。", 50, 50);
+        initMazeGame(currentQuestions[0]);
+    } else if (gameType === 'counting') {
+        if(currentQuestions.length === 0) return;
+        showScreen('counting');
+        showCountingQuestion();
     }
 }
 
@@ -169,10 +172,6 @@ function checkAnswer(selectedOption, selectedButton) {
         }
     }, 1500); // Increased delay to see feedback
 }
-
-
-
-
 
 // --- Line Drawing Game ---
 
@@ -318,3 +317,151 @@ lineDrawingCanvas.addEventListener('click', (e) => {
         drawLineDrawingBoard();
     }
 });
+
+// --- Maze Game ---
+
+let mazeState = {};
+
+function initMazeGame(question) {
+    const canvas = document.getElementById('maze-canvas');
+    const ctx = canvas.getContext('2d');
+    const map = question.map;
+    const tileSize = 50;
+
+    let playerPos = { x: 0, y: 0 };
+    for (let y = 0; y < map.length; y++) {
+        for (let x = 0; x < map[y].length; x++) {
+            if (map[y][x] === 'S') {
+                playerPos = { x, y };
+            }
+        }
+    }
+
+    mazeState = {
+        map,
+        tileSize,
+        playerPos,
+        goalPos: { x: 8, y: 4 }, // Hardcoded for now
+        ctx,
+        canvas
+    };
+
+    drawMaze();
+    window.addEventListener('keydown', handleMazeKeyPress);
+}
+
+function drawMaze() {
+    const { map, tileSize, playerPos, goalPos, ctx, canvas } = mazeState;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let y = 0; y < map.length; y++) {
+        for (let x = 0; x < map[y].length; x++) {
+            ctx.fillStyle = map[y][x] === 1 ? '#8B4513' : '#F0E68C';
+            if (map[y][x] === 'S') ctx.fillStyle = '#90EE90'; // Start
+            if (map[y][x] === 'G') ctx.fillStyle = '#FFD700'; // Goal
+            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+        }
+    }
+
+    // Draw Player
+    ctx.fillStyle = '#FF0000';
+    ctx.beginPath();
+    ctx.arc(playerPos.x * tileSize + tileSize / 2, playerPos.y * tileSize + tileSize / 2, tileSize / 3, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function handleMazeKeyPress(e) {
+    if (!mazeScreen.classList.contains('active')) return;
+
+    let { x, y } = mazeState.playerPos;
+    const { map } = mazeState;
+
+    switch (e.key) {
+        case 'ArrowUp': y--; break;
+        case 'ArrowDown': y++; break;
+        case 'ArrowLeft': x--; break;
+        case 'ArrowRight': x++; break;
+        default: return;
+    }
+
+    e.preventDefault();
+
+    if (map[y] && map[y][x] !== 1) {
+        mazeState.playerPos = { x, y };
+        drawMaze();
+
+        if (map[y][x] === 'G') {
+            window.removeEventListener('keydown', handleMazeKeyPress);
+            playAudio('assets/sounds/correct.mp3');
+            setTimeout(() => showScreen('reward'), 500);
+        }
+    }
+}
+
+// --- Counting Game ---
+
+function showCountingQuestion() {
+    const question = currentQuestions[currentQuestionIndex];
+    countingQuestionContainer.innerHTML = `<h2>${question.question}</h2>`;
+    if (question.question_audio) {
+        playAudio(question.question_audio);
+    }
+
+    // Display items to count
+    let itemsHtml = '<div class="counting-items-grid">';
+    for (let i = 0; i < question.item_count; i++) {
+        itemsHtml += `<img src="${question.item_image}" alt="item" class="counting-item">`;
+    }
+    itemsHtml += '</div>';
+    countingQuestionContainer.innerHTML += itemsHtml;
+
+    // Display options
+    countingOptionsContainer.innerHTML = '';
+    const shuffledOptions = question.options.sort(() => 0.5 - Math.random());
+
+    shuffledOptions.forEach(option => {
+        const button = document.createElement('button');
+        button.classList.add('option');
+        button.textContent = option;
+        button.style.fontSize = '48px';
+        button.style.width = '100px';
+        button.style.height = '100px';
+
+        button.addEventListener('click', () => {
+            checkCountingAnswer(option, button);
+        });
+        countingOptionsContainer.appendChild(button);
+    });
+}
+
+function checkCountingAnswer(selectedOption, selectedButton) {
+    const question = currentQuestions[currentQuestionIndex];
+    const isCorrect = selectedOption === question.answer;
+
+    countingOptionsContainer.querySelectorAll('.option').forEach(btn => {
+        btn.disabled = true;
+        if (parseInt(btn.textContent) === question.answer) {
+            btn.style.borderColor = 'var(--success-color)';
+        } else {
+            btn.style.opacity = '0.6';
+        }
+    });
+
+    if (isCorrect) {
+        correctAnswers++;
+        playAudio(question.correct_audio || 'assets/sounds/correct.mp3');
+        selectedButton.style.borderColor = 'var(--success-color)';
+    } else {
+        playAudio(question.incorrect_audio || 'assets/sounds/incorrect.mp3');
+        selectedButton.style.borderColor = 'var(--error-color)';
+    }
+
+    currentQuestionIndex++;
+    setTimeout(() => {
+        if (currentQuestionIndex < currentQuestions.length) {
+            showCountingQuestion();
+        } else {
+            showScreen('reward');
+        }
+    }, 1500);
+}

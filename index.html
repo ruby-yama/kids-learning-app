@@ -20,6 +20,7 @@
             <button class="game-select-button" data-game-type="multiple-choice">えらぶゲーム</button>
             <button class="game-select-button" data-game-type="line-drawing">せんつなぎゲーム</button>
             <button class="game-select-button" data-game-type="maze">めいろゲーム</button>
+            <button class="game-select-button" data-game-type="counting">かずあてゲーム</button>
         </div>
         <div id="question-screen" class="screen">
             <div id="question-container"></div>
@@ -31,7 +32,11 @@
         </div>
         <div id="maze-screen" class="screen">
             <h2>ゴールをめざそう！</h2>
-            <canvas id="maze-canvas"></canvas>
+            <canvas id="maze-canvas" width="500" height="300"></canvas>
+        </div>
+        <div id="counting-screen" class="screen">
+            <div id="counting-question-container"></div>
+            <div id="counting-options-container"></div>
         </div>
         <div id="reward-screen" class="screen">
             <h1>よくできました！</h1>

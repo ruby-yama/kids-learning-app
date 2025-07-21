@@ -38,11 +38,23 @@
         "type": "maze",
         "question": "ゴールをめざそう！",
         "map": [
-            [1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 1],
-            [1, 0, 1, 0, 1],
-            [1, 0, 0, 0, 1],
-            [1, 1, 1, 1, 1]
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, "S", 0, 1, 0, 0, 0, 1, 0, 1],
+            [1, 0, 0, 1, 0, 1, 0, 0, 0, 1],
+            [1, 1, 0, 1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
         ]
+    },
+    {
+        "type": "counting",
+        "question": "りんごはいくつあるかな？",
+        "question_audio": "assets/sounds/how_many_apples.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/apple.webp",
+        "item_count": 5,
+        "options": [3, 4, 5, 6],
+        "answer": 5
     }
 ]

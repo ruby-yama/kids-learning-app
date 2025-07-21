@@ -1,3 +1,4 @@
+
 /* --- Base Styles --- */
 :root {
     --primary-color: #00a0e9;
@@ -110,7 +111,7 @@ button:hover {
 }
 
 /* --- Game Screens --- */
-#options-container {
+#options-container, #counting-options-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -155,9 +156,29 @@ canvas {
     animation: bounce 1s infinite;
 }
 
+.counting-items-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+.counting-item {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-20px); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
 }
 
 /* --- Responsive Design --- */
@@ -185,7 +206,7 @@ canvas {
         width: 80%;
     }
 
-    #options-container {
+    #options-container, #counting-options-container {
         gap: 15px;
     }
 
@@ -198,6 +219,16 @@ canvas {
         width: 95%;
         height: auto;
     }
+
+    .counting-items-grid {
+        grid-template-columns: repeat(4, 1fr);
+        max-width: 400px;
+    }
+
+    .counting-item {
+        width: 60px;
+        height: 60px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -205,10 +236,9 @@ canvas {
         width: 100px;
         height: 100px;
     }
-}
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  75% { transform: translateX(10px); }
+    .counting-items-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 300px;
+    }
 }
