@@ -1,53 +1,214 @@
+/* --- Base Styles --- */
+:root {
+    --primary-color: #00a0e9;
+    --secondary-color: #ffc107;
+    --accent-color: #ff4500;
+    --background-start: #f0f8ff;
+    --background-end: #e6e6fa;
+    --text-color: #333;
+    --white: #ffffff;
+    --gray: #f0f0f0;
+    --light-gray: #ccc;
+    --dark-gray: #666;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
 body {
-    font-family: sans-serif;
+    font-family: var(--font-family);
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background: linear-gradient(135deg, var(--background-start), var(--background-end));
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+#app {
+    width: 100%;
+    max-width: 1000px;
+    height: 100%;
+    max-height: 700px;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
 }
 
 .screen {
     display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
 }
 
 .screen.active {
-    display: block;
+    display: flex;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+h1 {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+h2 {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--dark-gray);
+    margin-bottom: 30px;
+}
+
+/* --- Buttons --- */
 button {
-    padding: 20px 40px;
-    font-size: 24px;
+    font-family: var(--font-family);
+    font-size: 28px;
+    font-weight: 700;
+    padding: 15px 40px;
+    border-radius: 50px;
+    border: none;
     cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: var(--white);
 }
 
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+#start-button, #retry-button {
+    background-color: var(--accent-color);
+}
+
+.game-select-button {
+    background-color: var(--primary-color);
+    display: block;
+    margin: 15px auto;
+    width: 300px;
+}
+
+/* --- Game Screens --- */
 #options-container {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 25px;
     margin-top: 20px;
 }
 
 .option {
-    padding: 20px;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    cursor: pointer;
+    background-color: var(--white);
+    border: 3px solid var(--light-gray);
+    border-radius: 20px;
+    padding: 15px;
+    transition: transform 0.2s, border-color 0.2s;
+    color: var(--text-color);
+}
+
+.option:hover {
+    transform: translateY(-5px);
+    border-color: var(--secondary-color);
+}
+
+.option.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 15px rgba(0, 160, 233, 0.5);
 }
 
 .option img {
-    width: 150px;
-    height: 150px;
-}
-
-#game-selection-screen button {
-    display: block;
-    margin: 20px auto;
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
 }
 
 canvas {
-    border: 2px solid #333;
-    background-color: #fff;
+    border: 3px solid var(--light-gray);
+    border-radius: 15px;
+    background-color: #fdfdfd;
+}
+
+#reward-screen h1 {
+    font-size: 60px;
+    color: var(--accent-color);
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    #app {
+        border-radius: 0;
+        max-height: none;
+        height: 100%;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    button {
+        font-size: 22px;
+        padding: 12px 30px;
+    }
+
+    .game-select-button {
+        width: 80%;
+    }
+
+    #options-container {
+        gap: 15px;
+    }
+
+    .option img {
+        width: 120px;
+        height: 120px;
+    }
+
+    #line-drawing-canvas, #maze-canvas {
+        width: 95%;
+        height: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .option img {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
 }

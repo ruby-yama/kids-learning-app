@@ -112,8 +112,9 @@ function showQuestion() {
         button.classList.add('option');
         if (option.image) {
             const image = document.createElement('img');
-            image.src = option.image;
+            image.src = option.image.replace('.png', '.webp'); // WebP
             image.alt = option.name;
+            image.loading = 'lazy'; // Lazy loading
             button.appendChild(image);
         } else {
             button.textContent = option.name;
@@ -123,18 +124,42 @@ function showQuestion() {
             if (option.audio) {
                 playAudio(option.audio);
             }
-            optionsContainer.querySelectorAll('.option').forEach(btn => btn.disabled = true);
-            checkAnswer(option);
+            // Pass the button element to checkAnswer
+            checkAnswer(option, button);
         });
         optionsContainer.appendChild(button);
     });
 }
 
-function checkAnswer(selectedOption) {
+function checkAnswer(selectedOption, selectedButton) {
     const question = currentQuestions[currentQuestionIndex];
-    if (selectedOption.name === question.answer) {
+    const isCorrect = selectedOption.name === question.answer;
+
+    // Visual feedback
+    optionsContainer.querySelectorAll('.option').forEach(btn => {
+        btn.disabled = true;
+        // Mark correct and incorrect answers
+        const optionName = btn.querySelector('img')?.alt || btn.textContent;
+        if (optionName === question.answer) {
+            btn.style.borderColor = 'var(--success-color)';
+            btn.style.boxShadow = '0 0 15px rgba(40, 167, 69, 0.5)';
+        } else {
+            btn.style.opacity = '0.6';
+        }
+    });
+
+    if (isCorrect) {
         correctAnswers++;
+        playAudio(question.correct_audio || 'assets/sounds/correct.mp3'); // Fallback sound
+        selectedButton.style.borderColor = 'var(--success-color)';
+        selectedButton.style.transform = 'scale(1.05)';
+
+    } else {
+        playAudio(question.incorrect_audio || 'assets/sounds/incorrect.mp3'); // Fallback sound
+        selectedButton.style.borderColor = 'var(--error-color)';
+        selectedButton.style.animation = 'shake 0.5s';
     }
+
     currentQuestionIndex++;
     setTimeout(() => {
         if (currentQuestionIndex < currentQuestions.length) {
@@ -142,8 +167,11 @@ function checkAnswer(selectedOption) {
         } else {
             showScreen('reward');
         }
-    }, 1000);
+    }, 1500); // Increased delay to see feedback
 }
+
+
+
 
 
 // --- Line Drawing Game ---

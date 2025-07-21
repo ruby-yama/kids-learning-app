@@ -1,13 +1,14 @@
-
 [
     {
         "type": "multiple-choice",
         "question": "「いぬ」はどっち？",
         "question_audio": "assets/sounds/dog_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
         "options": [
-            {"name": "いぬ", "image": "assets/images/dog.png", "audio": "assets/sounds/dog.mp3"},
-            {"name": "ねこ", "image": "assets/images/cat.png", "audio": "assets/sounds/cat.mp3"},
-            {"name": "うさぎ", "image": "assets/images/rabbit.png", "audio": "assets/sounds/rabbit.mp3"}
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"},
+            {"name": "うさぎ", "image": "assets/images/rabbit.webp", "audio": "assets/sounds/rabbit.mp3"}
         ],
         "answer": "いぬ"
     },
@@ -15,10 +16,12 @@
         "type": "multiple-choice",
         "question": "「りんご」はどっち？",
         "question_audio": "assets/sounds/apple_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
         "options": [
-            {"name": "みかん", "image": "assets/images/orange.png", "audio": "assets/sounds/orange.mp3"},
-            {"name": "りんご", "image": "assets/images/apple.png", "audio": "assets/sounds/apple.mp3"},
-            {"name": "バナナ", "image": "assets/images/banana.png", "audio": "assets/sounds/banana.mp3"}
+            {"name": "みかん", "image": "assets/images/orange.webp", "audio": "assets/sounds/orange.mp3"},
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "バナナ", "image": "assets/images/banana.webp", "audio": "assets/sounds/banana.mp3"}
         ],
         "answer": "りんご"
     },
@@ -26,8 +29,8 @@
         "type": "line-drawing",
         "question": "なかまをみつけて せんでつなごう！",
         "pairs": [
-            {"item1": {"name": "いぬ", "image": "assets/images/dog.png"}, "item2": {"name": "どうぶつ"}},
-            {"item1": {"name": "りんご"}, "item2": {"name": "くだもの"}},
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "どうぶつ"}},
+            {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "くだもの"}},
             {"item1": {"name": "くるま"}, "item2": {"name": "のりもの"}}
         ]
     },
