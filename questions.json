@@ -31,7 +31,7 @@
         "pairs": [
             {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "どうぶつ"}},
             {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "くだもの"}},
-            {"item1": {"name": "くるま"}, "item2": {"name": "のりもの"}}
+            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "のりもの"}}
         ]
     },
     {
