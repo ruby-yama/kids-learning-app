@@ -22,6 +22,7 @@
             <button class="game-select-button" data-game-type="maze"><span class="icon">🗺️</span>めいろゲーム</button>
             <button class="game-select-button" data-game-type="counting"><span class="icon">🍎</span>かずあてゲーム</button>
             <button class="game-select-button" data-game-type="character-tracing"><span class="icon">✍️</span>もじなぞりゲーム</button>
+            <button class="game-select-button" data-game-type="drawing"><span class="icon">🎨</span>おえかきモード</button>
         </div>
         <div id="question-screen" class="screen">
             <button class="back-button">もどる</button>
@@ -61,6 +62,17 @@
             <button class="back-button">もどる</button>
             <h2 id="character-tracing-title"></h2>
             <canvas id="character-tracing-canvas" width="500" height="500"></canvas>
+        </div>
+        <div id="drawing-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>おえかきモード</h2>
+            <div id="drawing-tools">
+                <button id="black-pen" class="tool-button active" data-tool="pen" data-color="#000000">🖊️ くろペン</button>
+                <button id="red-pen" class="tool-button" data-tool="pen" data-color="#ff0000">🖊️ あかペン</button>
+                <button id="eraser" class="tool-button" data-tool="eraser">🧽 けしゴム</button>
+                <button id="clear-canvas" class="tool-button">🗑️ クリア</button>
+            </div>
+            <canvas id="drawing-canvas" width="600" height="400"></canvas>
         </div>
     </div>
     <script src="script.js"></script>

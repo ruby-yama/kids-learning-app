@@ -39,7 +39,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    padding: 15px;
     box-sizing: border-box;
     position: relative;
 }
@@ -68,7 +68,7 @@ h1 {
     font-size: 48px;
     font-weight: 800;
     color: var(--primary-color);
-    margin-bottom: 40px;
+    margin-bottom: 25px;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
 }
 
@@ -76,7 +76,7 @@ h2 {
     font-size: 36px;
     font-weight: 700;
     color: var(--dark-gray);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 /* --- Buttons --- */
@@ -120,8 +120,9 @@ button:hover {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 15px auto;
-    width: 350px;
+    margin: 10px auto;
+    width: 90%;
+    max-width: 320px;
     gap: 15px;
 }
 
@@ -134,6 +135,7 @@ button:hover {
 .game-select-button[data-game-type="maze"] { background-color: #f44336; }
 .game-select-button[data-game-type="counting"] { background-color: #FF9800; }
 .game-select-button[data-game-type="character-tracing"] { background-color: #9C27B0; }
+.game-select-button[data-game-type="drawing"] { background-color: #E91E63; }
 
 /* --- Game Screens --- */
 #options-container, #counting-options-container {
@@ -235,23 +237,30 @@ canvas {
         border-radius: 0;
         max-height: none;
         height: 100%;
+        padding: 10px;
     }
 
     h1 {
-        font-size: 36px;
+        font-size: 32px;
+        margin-bottom: 15px;
     }
 
     h2 {
-        font-size: 28px;
+        font-size: 24px;
+        margin-bottom: 15px;
     }
 
     button {
-        font-size: 22px;
-        padding: 12px 30px;
+        font-size: 20px;
+        padding: 10px 25px;
     }
 
     .game-select-button {
-        width: 80%;
+        width: 90%;
+        max-width: 280px;
+        margin: 6px auto;
+        font-size: 18px;
+        padding: 12px 20px;
     }
 
     #options-container, #counting-options-container {
@@ -284,6 +293,28 @@ canvas {
 }
 
 @media (max-width: 480px) {
+    #app {
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .game-select-button {
+        width: 95%;
+        max-width: 250px;
+        margin: 4px auto;
+        font-size: 16px;
+        padding: 10px 15px;
+    }
+
     .option img {
         width: 100px;
         height: 100px;
@@ -304,4 +335,73 @@ canvas {
 
 #character-tracing-canvas {
     touch-action: none;
+}
+
+/* --- Drawing Mode --- */
+#drawing-tools {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tool-button {
+    background-color: var(--gray);
+    color: var(--dark-gray);
+    font-size: 18px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    transition: all 0.2s ease;
+}
+
+.tool-button:hover {
+    transform: scale(1.05);
+}
+
+.tool-button.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(0, 160, 233, 0.3);
+}
+
+.tool-button[data-color="#ff0000"] {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+.tool-button[data-color="#ff0000"].active {
+    background-color: #f44336;
+    color: var(--white);
+}
+
+.tool-button[data-tool="eraser"] {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.tool-button[data-tool="eraser"].active {
+    background-color: #ff9800;
+    color: var(--white);
+}
+
+#clear-canvas {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+#clear-canvas:hover {
+    background-color: #f44336;
+    color: var(--white);
+}
+
+#drawing-canvas {
+    cursor: crosshair;
+    touch-action: none;
+    background-color: var(--white);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#drawing-canvas.eraser-mode {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="2" width="16" height="16" fill="%23ff9800" stroke="%23f57c00" stroke-width="2" rx="2"/></svg>') 10 10, auto;
 }

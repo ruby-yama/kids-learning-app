@@ -12,6 +12,7 @@ const optionsContainer = document.getElementById('options-container');
 const countingScreen = document.getElementById('counting-screen');
 const countingQuestionContainer = document.getElementById('counting-question-container');
 const countingOptionsContainer = document.getElementById('counting-options-container');
+const drawingScreen = document.getElementById('drawing-screen');
 
 // --- Canvas setup ---
 const lineDrawingCanvas = document.getElementById('line-drawing-canvas');
@@ -91,6 +92,9 @@ async function startGame(gameType) {
         if(currentQuestions.length === 0) return;
         showScreen('character-tracing');
         initCharacterTracingGame(currentQuestions[0]);
+    } else if (gameType === 'drawing') {
+        showScreen('drawing');
+        initDrawingMode();
     }
 }
 
@@ -856,4 +860,167 @@ function pDistance(x, y, x1, y1, x2, y2) {
   const dx = x - xx;
   const dy = y - yy;
   return Math.sqrt(dx * dx + dy * dy);
+}
+
+// --- Drawing Mode ---
+let drawingState = {
+    canvas: null,
+    ctx: null,
+    isDrawing: false,
+    currentTool: 'pen',
+    currentColor: '#000000',
+    lineWidth: 5,
+    lastX: 0,
+    lastY: 0
+};
+
+function initDrawingMode() {
+    drawingState.canvas = document.getElementById('drawing-canvas');
+    drawingState.ctx = drawingState.canvas.getContext('2d');
+    
+    // Set canvas size
+    drawingState.canvas.width = 600;
+    drawingState.canvas.height = 400;
+    
+    // Set initial drawing properties
+    drawingState.ctx.lineCap = 'round';
+    drawingState.ctx.lineJoin = 'round';
+    drawingState.ctx.lineWidth = drawingState.lineWidth;
+    drawingState.ctx.strokeStyle = drawingState.currentColor;
+    
+    // Clear canvas
+    clearDrawingCanvas();
+    
+    // Add event listeners for tools
+    setupDrawingTools();
+    
+    // Add drawing event listeners
+    setupDrawingEvents();
+}
+
+function setupDrawingTools() {
+    // Tool buttons
+    document.getElementById('black-pen').addEventListener('click', () => selectTool('pen', '#000000'));
+    document.getElementById('red-pen').addEventListener('click', () => selectTool('pen', '#ff0000'));
+    document.getElementById('eraser').addEventListener('click', () => selectTool('eraser'));
+    document.getElementById('clear-canvas').addEventListener('click', clearDrawingCanvas);
+}
+
+function selectTool(tool, color = null) {
+    // Remove active class from all tool buttons
+    document.querySelectorAll('.tool-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Set current tool
+    drawingState.currentTool = tool;
+    
+    if (tool === 'pen' && color) {
+        drawingState.currentColor = color;
+        drawingState.ctx.globalCompositeOperation = 'source-over';
+        drawingState.ctx.strokeStyle = color;
+        drawingState.lineWidth = 5;
+        
+        // Add active class to selected pen
+        const penButton = document.querySelector(`[data-color="${color}"]`);
+        if (penButton) penButton.classList.add('active');
+        
+        // Remove eraser cursor
+        drawingState.canvas.classList.remove('eraser-mode');
+    } else if (tool === 'eraser') {
+        drawingState.ctx.globalCompositeOperation = 'destination-out';
+        drawingState.lineWidth = 20;
+        
+        // Add active class to eraser
+        document.getElementById('eraser').classList.add('active');
+        
+        // Add eraser cursor
+        drawingState.canvas.classList.add('eraser-mode');
+    }
+    
+    drawingState.ctx.lineWidth = drawingState.lineWidth;
+}
+
+function clearDrawingCanvas() {
+    drawingState.ctx.clearRect(0, 0, drawingState.canvas.width, drawingState.canvas.height);
+    
+    // Fill with white background
+    drawingState.ctx.fillStyle = '#ffffff';
+    drawingState.ctx.fillRect(0, 0, drawingState.canvas.width, drawingState.canvas.height);
+}
+
+function setupDrawingEvents() {
+    // Mouse events
+    drawingState.canvas.addEventListener('mousedown', startDrawing);
+    drawingState.canvas.addEventListener('mousemove', draw);
+    drawingState.canvas.addEventListener('mouseup', stopDrawing);
+    drawingState.canvas.addEventListener('mouseout', stopDrawing);
+    
+    // Touch events
+    drawingState.canvas.addEventListener('touchstart', handleTouchStart);
+    drawingState.canvas.addEventListener('touchmove', handleTouchMove);
+    drawingState.canvas.addEventListener('touchend', handleTouchEnd);
+}
+
+function getDrawingPosition(e) {
+    const rect = drawingState.canvas.getBoundingClientRect();
+    const scaleX = drawingState.canvas.width / rect.width;
+    const scaleY = drawingState.canvas.height / rect.height;
+    
+    return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+    };
+}
+
+function startDrawing(e) {
+    drawingState.isDrawing = true;
+    const pos = getDrawingPosition(e);
+    drawingState.lastX = pos.x;
+    drawingState.lastY = pos.y;
+}
+
+function draw(e) {
+    if (!drawingState.isDrawing) return;
+    
+    const pos = getDrawingPosition(e);
+    
+    drawingState.ctx.beginPath();
+    drawingState.ctx.moveTo(drawingState.lastX, drawingState.lastY);
+    drawingState.ctx.lineTo(pos.x, pos.y);
+    drawingState.ctx.stroke();
+    
+    drawingState.lastX = pos.x;
+    drawingState.lastY = pos.y;
+}
+
+function stopDrawing() {
+    drawingState.isDrawing = false;
+}
+
+// Touch event handlers
+function handleTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousedown', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    drawingState.canvas.dispatchEvent(mouseEvent);
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousemove', {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+    });
+    drawingState.canvas.dispatchEvent(mouseEvent);
+}
+
+function handleTouchEnd(e) {
+    e.preventDefault();
+    const mouseEvent = new MouseEvent('mouseup', {});
+    drawingState.canvas.dispatchEvent(mouseEvent);
 }
