@@ -80,15 +80,17 @@
     {
         "type": "line-drawing",
         "question": "なかまをみつけて せんでつなごう！",
+        "question_audio": "assets/sounds/nakama_sen.mp3",
         "pairs": [
-            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "どうぶつ"}},
-            {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "くだもの"}},
-            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "のりもの"}}
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "どうぶつ", "image": "assets/images/animal_mark05_zou.webp"}},
+            {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "くだもの", "image": "assets/images/fruits_basket.webp"}},
+            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "のりもの", "image": "assets/images/kouji_road_roller.webp"}}
         ]
     },
     {
         "type": "line-drawing",
         "question": "おなじものを せんでつなごう！",
+        "question_audio": "assets/sounds/onaji_sen.mp3",
         "pairs": [
             {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "ねこ", "image": "assets/images/cat.webp"}},
             {"item1": {"name": "バナナ", "image": "assets/images/banana.webp"}, "item2": {"name": "バナナ", "image": "assets/images/banana.webp"}},
@@ -98,10 +100,11 @@
     {
         "type": "line-drawing",
         "question": "かんけいあるものを えらぼう！",
+        "question_audio": "assets/sounds/kankei_sen.mp3",
         "pairs": [
-            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "さかな"}},
-            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}, "item2": {"name": "にんじん"}},
-            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "どうろ"}}
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "さかな", "image": "assets/images/fish_maguro.webp"}},
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}, "item2": {"name": "にんじん", "image": "assets/images/ninjin_carrot.webp"}},
+            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "どうろ", "image": "assets/images/road_douro.webp"}}
         ]
     },
     {
