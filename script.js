@@ -719,18 +719,21 @@ function checkStrokeCompletion() {
     if (userPath.length < 2) return false;
 
     const stroke = question.strokes[currentStrokeIndex];
-    const startThreshold = 30;
-    const endThreshold = 30;
-    const pathThreshold = 25;
+    const startThreshold = 35; // Slightly increased threshold
+    const endThreshold = 35;   // Slightly increased threshold
+    const pathThreshold = 30;  // Threshold for distance from path
+    const coverageThreshold = 0.8; // 80% of the stroke must be covered
 
+    // 1. Check Start and End points
     const distToStart = Math.hypot(userPath[0].x - stroke[0].x, userPath[0].y - stroke[0].y);
     const distToEnd = Math.hypot(userPath[userPath.length - 1].x - stroke[stroke.length - 1].x, userPath[userPath.length - 1].y - stroke[stroke.length - 1].y);
 
     if (distToStart > startThreshold || distToEnd > endThreshold) {
+        console.log("Start or end point too far");
         return false;
     }
 
-    // Check if the user's path is reasonably close to the actual stroke path
+    // 2. Check if the user's path deviates too much from the stroke
     for (const userPoint of userPath) {
         let minDistance = Infinity;
         for (let i = 0; i < stroke.length - 1; i++) {
@@ -740,10 +743,33 @@ function checkStrokeCompletion() {
             }
         }
         if (minDistance > pathThreshold) {
+            console.log("User path deviated too much");
             return false;
         }
     }
 
+    // 3. Check if the user's path covers enough of the stroke
+    let coveredPoints = 0;
+    for (const strokePoint of stroke) {
+        let minDistance = Infinity;
+        for (let i = 0; i < userPath.length - 1; i++) {
+            const dist = pDistance(strokePoint.x, strokePoint.y, userPath[i].x, userPath[i].y, userPath[i+1].x, userPath[i+1].y);
+            if (dist < minDistance) {
+                minDistance = dist;
+            }
+        }
+        if (minDistance <= pathThreshold) {
+            coveredPoints++;
+        }
+    }
+
+    const coverage = coveredPoints / stroke.length;
+    if (coverage < coverageThreshold) {
+        console.log(`Coverage not met: ${coverage}`);
+        return false;
+    }
+
+    console.log("Stroke complete!");
     return true;
 }
 
