@@ -115,15 +115,33 @@ button:hover {
     background-color: var(--accent-color);
 }
 
+#game-selection-screen {
+    padding: 10px;
+}
+
+#game-selection-screen .screen {
+    gap: 10px;
+}
+
+#game-selection-screen .game-buttons-container {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 15px;
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
 .game-select-button {
     background-color: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 10px auto;
-    width: 90%;
-    max-width: 320px;
-    gap: 15px;
+    margin: 0;
+    width: 100%;
+    gap: 10px;
+    font-size: 20px;
+    padding: 12px 15px;
 }
 
 .game-select-button .icon {
@@ -232,7 +250,7 @@ canvas {
 }
 
 /* --- Responsive Design --- */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     #app {
         border-radius: 0;
         max-height: none;
@@ -255,10 +273,15 @@ canvas {
         padding: 10px 25px;
     }
 
+    .game-buttons-container {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        max-width: 400px;
+    }
+    
     .game-select-button {
-        width: 90%;
-        max-width: 280px;
-        margin: 6px auto;
+        width: 100%;
+        margin: 0;
         font-size: 18px;
         padding: 12px 20px;
     }
@@ -307,12 +330,22 @@ canvas {
         margin-bottom: 10px;
     }
 
+    .game-buttons-container {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        max-width: 300px;
+    }
+    
     .game-select-button {
-        width: 95%;
-        max-width: 250px;
-        margin: 4px auto;
+        width: 100%;
+        margin: 0;
         font-size: 16px;
-        padding: 10px 15px;
+        padding: 10px 12px;
+        gap: 8px;
+    }
+    
+    .game-select-button .icon {
+        font-size: 24px;
     }
 
     .option img {
