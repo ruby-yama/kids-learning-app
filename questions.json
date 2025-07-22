@@ -28,6 +28,7 @@
     {
         "type": "multiple-choice",
         "question": "「ねこ」はどっち？",
+        "question_audio": "assets/sounds/cat_question.mp3",
         "correct_audio": "assets/sounds/correct.mp3",
         "incorrect_audio": "assets/sounds/incorrect.mp3",
         "options": [
@@ -40,6 +41,7 @@
     {
         "type": "multiple-choice",
         "question": "「バナナ」はどっち？",
+        "question_audio": "assets/sounds/banana_question.mp3",
         "correct_audio": "assets/sounds/correct.mp3",
         "incorrect_audio": "assets/sounds/incorrect.mp3",
         "options": [
@@ -48,6 +50,32 @@
             {"name": "みかん", "image": "assets/images/orange.webp", "audio": "assets/sounds/orange.mp3"}
         ],
         "answer": "バナナ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "「うさぎ」はどっち？",
+        "question_audio": "assets/sounds/rabbit_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "くるま", "image": "assets/images/car.webp"},
+            {"name": "うさぎ", "image": "assets/images/rabbit.webp", "audio": "assets/sounds/rabbit.mp3"},
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"}
+        ],
+        "answer": "うさぎ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "「くるま」はどっち？",
+        "question_audio": "assets/sounds/car_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "くるま", "image": "assets/images/car.webp"},
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"}
+        ],
+        "answer": "くるま"
     },
     {
         "type": "line-drawing",
@@ -65,6 +93,15 @@
             {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "ねこ", "image": "assets/images/cat.webp"}},
             {"item1": {"name": "バナナ", "image": "assets/images/banana.webp"}, "item2": {"name": "バナナ", "image": "assets/images/banana.webp"}},
             {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"},"item2": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "かんけいあるものを えらぼう！",
+        "pairs": [
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "さかな"}},
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}, "item2": {"name": "にんじん"}},
+            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "どうろ"}}
         ]
     },
     {
@@ -93,6 +130,20 @@
         ]
     },
     {
+        "type": "maze",
+        "question": "まんなかのゴールをめざせ！",
+        "map": [
+            ["S", 0, 0, 0, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 0, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, "G", 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
         "type": "counting",
         "question": "りんごはいくつあるかな？",
         "question_audio": "assets/sounds/how_many_apples.mp3",
@@ -106,11 +157,23 @@
     {
         "type": "counting",
         "question": "みかんはいくつあるかな？",
+        "question_audio": "assets/sounds/how_many_oranges.mp3",
         "correct_audio": "assets/sounds/correct.mp3",
         "incorrect_audio": "assets/sounds/incorrect.mp3",
         "item_image": "assets/images/orange.webp",
         "item_count": 7,
         "options": [5, 6, 7, 8],
         "answer": 7
+    },
+    {
+        "type": "counting",
+        "question": "くるまはなんだいあるかな？",
+        "question_audio": "assets/sounds/how_many_cars.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/car.webp",
+        "item_count": 4,
+        "options": [2, 3, 4, 5],
+        "answer": 4
     }
 ]
