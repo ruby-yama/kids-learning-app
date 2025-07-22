@@ -586,8 +586,8 @@ function drawTraceBoard() {
     const { ctx, canvas, question, currentStrokeIndex } = traceState;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw the full character outline faintly
-    ctx.strokeStyle = '#e0e0e0';
+    // 背景に薄く完成形を表示
+    ctx.strokeStyle = '#f0f0f0';
     ctx.lineWidth = 20;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
@@ -600,9 +600,11 @@ function drawTraceBoard() {
         ctx.stroke();
     });
 
-    // Draw the current stroke to be traced more prominently
+    // 現在のストロークを表示
     if (currentStrokeIndex < question.strokes.length) {
         const currentStroke = question.strokes[currentStrokeIndex];
+        
+        // ストロークのパスを表示
         ctx.strokeStyle = '#a0a0a0';
         ctx.lineWidth = 20;
         ctx.beginPath();
@@ -612,15 +614,48 @@ function drawTraceBoard() {
         }
         ctx.stroke();
 
-        // Draw starting point indicator
+        // 書き順の矢印を表示
+        ctx.strokeStyle = '#4a90e2';
+        ctx.lineWidth = 3;
+        for (let i = 0; i < currentStroke.length - 1; i++) {
+            const start = currentStroke[i];
+            const end = currentStroke[i + 1];
+            const dx = end.x - start.x;
+            const dy = end.y - start.y;
+            const angle = Math.atan2(dy, dx);
+            const length = Math.sqrt(dx * dx + dy * dy);
+            
+            // 矢印の先端の大きさ
+            const arrowSize = 15;
+            // 矢印の位置（線の中間点）
+            const midX = (start.x + end.x) / 2;
+            const midY = (start.y + end.y) / 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(midX - arrowSize * Math.cos(angle - Math.PI / 6), midY - arrowSize * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(midX, midY);
+            ctx.lineTo(midX - arrowSize * Math.cos(angle + Math.PI / 6), midY - arrowSize * Math.sin(angle + Math.PI / 6));
+            ctx.stroke();
+        }
+
+        // 開始点を強調表示
         ctx.fillStyle = '#007bff';
         ctx.beginPath();
         ctx.arc(currentStroke[0].x, currentStroke[0].y, 15, 0, Math.PI * 2);
         ctx.fill();
+        
+        // 開始点の周りに点滅エフェクト
+        const pulseSize = 20 + Math.sin(Date.now() / 200) * 5;
+        ctx.strokeStyle = '#007bff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(currentStroke[0].x, currentStroke[0].y, pulseSize, 0, Math.PI * 2);
+        ctx.stroke();
     }
 
-    // Draw completed strokes
+    // 完了したストロークを表示
     ctx.strokeStyle = '#28a745';
+    ctx.lineWidth = 20;
     for (let i = 0; i < currentStrokeIndex; i++) {
         const stroke = question.strokes[i];
         ctx.beginPath();
@@ -631,7 +666,7 @@ function drawTraceBoard() {
         ctx.stroke();
     }
 
-    // Draw user's current path
+    // ユーザーの入力を表示
     if (traceState.isDrawing && traceState.userPath.length > 1) {
         ctx.strokeStyle = '#ff4500';
         ctx.lineWidth = 25;
@@ -642,6 +677,9 @@ function drawTraceBoard() {
         }
         ctx.stroke();
     }
+
+    // アニメーションの更新
+    requestAnimationFrame(drawTraceBoard);
 }
 
 function getTracePointerPosition(e) {
@@ -719,44 +757,66 @@ function checkStrokeCompletion() {
     if (userPath.length < 2) return false;
 
     const stroke = question.strokes[currentStrokeIndex];
-    const startThreshold = 35; // Slightly increased threshold
-    const endThreshold = 35;   // Slightly increased threshold
-    const pathThreshold = 30;  // Threshold for distance from path
-    const coverageThreshold = 0.8; // 80% of the stroke must be covered
+    const startThreshold = 40; // 開始点の判定範囲を広げる
+    const endThreshold = 40;   // 終了点の判定範囲を広げる
+    const pathThreshold = 40;  // パスからの許容距離を広げる
+    const coverageThreshold = 0.7; // カバー率の要求を70%に下げる
+    const directionThreshold = 0.6; // 方向の一致度の閾値（60%）
 
-    // 1. Check Start and End points
+    // 1. 開始点と終了点のチェック
     const distToStart = Math.hypot(userPath[0].x - stroke[0].x, userPath[0].y - stroke[0].y);
     const distToEnd = Math.hypot(userPath[userPath.length - 1].x - stroke[stroke.length - 1].x, userPath[userPath.length - 1].y - stroke[stroke.length - 1].y);
 
     if (distToStart > startThreshold || distToEnd > endThreshold) {
-        console.log("Start or end point too far");
         return false;
     }
 
-    // 2. Check if the user's path deviates too much from the stroke
+    // 2. ストロークの方向チェック
+    let correctDirections = 0;
+    for (let i = 0; i < userPath.length - 1; i++) {
+        const userDx = userPath[i + 1].x - userPath[i].x;
+        const userDy = userPath[i + 1].y - userPath[i].y;
+        const userAngle = Math.atan2(userDy, userDx);
+
+        // 最も近いストロークセグメントの方向と比較
+        let minAngleDiff = Math.PI;
+        for (let j = 0; j < stroke.length - 1; j++) {
+            const strokeDx = stroke[j + 1].x - stroke[j].x;
+            const strokeDy = stroke[j + 1].y - stroke[j].y;
+            const strokeAngle = Math.atan2(strokeDy, strokeDx);
+            const angleDiff = Math.abs(userAngle - strokeAngle);
+            minAngleDiff = Math.min(minAngleDiff, angleDiff, Math.abs(angleDiff - 2 * Math.PI));
+        }
+
+        if (minAngleDiff < Math.PI / 4) { // 45度以内の差を許容
+            correctDirections++;
+        }
+    }
+
+    const directionAccuracy = correctDirections / (userPath.length - 1);
+    if (directionAccuracy < directionThreshold) {
+        return false;
+    }
+
+    // 3. パスの逸脱チェック
     for (const userPoint of userPath) {
         let minDistance = Infinity;
         for (let i = 0; i < stroke.length - 1; i++) {
             const dist = pDistance(userPoint.x, userPoint.y, stroke[i].x, stroke[i].y, stroke[i+1].x, stroke[i+1].y);
-            if (dist < minDistance) {
-                minDistance = dist;
-            }
+            minDistance = Math.min(minDistance, dist);
         }
         if (minDistance > pathThreshold) {
-            console.log("User path deviated too much");
             return false;
         }
     }
 
-    // 3. Check if the user's path covers enough of the stroke
+    // 4. ストロークのカバー率チェック
     let coveredPoints = 0;
     for (const strokePoint of stroke) {
         let minDistance = Infinity;
         for (let i = 0; i < userPath.length - 1; i++) {
             const dist = pDistance(strokePoint.x, strokePoint.y, userPath[i].x, userPath[i].y, userPath[i+1].x, userPath[i+1].y);
-            if (dist < minDistance) {
-                minDistance = dist;
-            }
+            minDistance = Math.min(minDistance, dist);
         }
         if (minDistance <= pathThreshold) {
             coveredPoints++;
@@ -764,13 +824,7 @@ function checkStrokeCompletion() {
     }
 
     const coverage = coveredPoints / stroke.length;
-    if (coverage < coverageThreshold) {
-        console.log(`Coverage not met: ${coverage}`);
-        return false;
-    }
-
-    console.log("Stroke complete!");
-    return true;
+    return coverage >= coverageThreshold;
 }
 
 // Helper function to calculate distance from a point to a line segment
