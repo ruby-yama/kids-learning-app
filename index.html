@@ -21,6 +21,7 @@
             <button class="game-select-button" data-game-type="line-drawing">せんつなぎゲーム</button>
             <button class="game-select-button" data-game-type="maze">めいろゲーム</button>
             <button class="game-select-button" data-game-type="counting">かずあてゲーム</button>
+            <button class="game-select-button" data-game-type="character-tracing">もじなぞりゲーム</button>
         </div>
         <div id="question-screen" class="screen">
             <div id="question-container"></div>
@@ -51,6 +52,10 @@
         <div id="reward-screen" class="screen">
             <h1>よくできました！</h1>
             <button id="retry-button">もういちど</button>
+        </div>
+        <div id="character-tracing-screen" class="screen">
+            <h2 id="character-tracing-title"></h2>
+            <canvas id="character-tracing-canvas" width="500" height="500"></canvas>
         </div>
     </div>
     <script src="script.js"></script>

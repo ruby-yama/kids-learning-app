@@ -81,6 +81,10 @@ async function startGame(gameType) {
         if(currentQuestions.length === 0) return;
         showScreen('counting');
         showCountingQuestion();
+    } else if (gameType === 'character-tracing') {
+        if(currentQuestions.length === 0) return;
+        showScreen('character-tracing');
+        initCharacterTracingGame(currentQuestions[0]);
     }
 }
 
@@ -533,4 +537,230 @@ function checkCountingAnswer(selectedOption, selectedButton) {
             showScreen('reward');
         }
     }, 1500);
+}
+
+// --- Character Tracing Game ---
+
+let traceState = {};
+
+function initCharacterTracingGame(question) {
+    const canvas = document.getElementById('character-tracing-canvas');
+    const ctx = canvas.getContext('2d');
+    const title = document.getElementById('character-tracing-title');
+    title.textContent = question.question;
+
+    traceState = {
+        question,
+        canvas,
+        ctx,
+        currentStrokeIndex: 0,
+        userPath: [],
+        isDrawing: false
+    };
+
+    if (question.start_audio) {
+        playAudio(question.start_audio);
+    }
+
+    drawTraceBoard();
+
+    canvas.addEventListener('pointerdown', handleTraceStart);
+    canvas.addEventListener('pointermove', handleTraceMove);
+    canvas.addEventListener('pointerup', handleTraceEnd);
+}
+
+function drawTraceBoard() {
+    const { ctx, canvas, question, currentStrokeIndex } = traceState;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw the full character outline faintly
+    ctx.strokeStyle = '#e0e0e0';
+    ctx.lineWidth = 20;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    question.strokes.forEach(stroke => {
+        ctx.beginPath();
+        ctx.moveTo(stroke[0].x, stroke[0].y);
+        for (let i = 1; i < stroke.length; i++) {
+            ctx.lineTo(stroke[i].x, stroke[i].y);
+        }
+        ctx.stroke();
+    });
+
+    // Draw the current stroke to be traced more prominently
+    if (currentStrokeIndex < question.strokes.length) {
+        const currentStroke = question.strokes[currentStrokeIndex];
+        ctx.strokeStyle = '#a0a0a0';
+        ctx.lineWidth = 20;
+        ctx.beginPath();
+        ctx.moveTo(currentStroke[0].x, currentStroke[0].y);
+        for (let i = 1; i < currentStroke.length; i++) {
+            ctx.lineTo(currentStroke[i].x, currentStroke[i].y);
+        }
+        ctx.stroke();
+
+        // Draw starting point indicator
+        ctx.fillStyle = '#007bff';
+        ctx.beginPath();
+        ctx.arc(currentStroke[0].x, currentStroke[0].y, 15, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // Draw completed strokes
+    ctx.strokeStyle = '#28a745';
+    for (let i = 0; i < currentStrokeIndex; i++) {
+        const stroke = question.strokes[i];
+        ctx.beginPath();
+        ctx.moveTo(stroke[0].x, stroke[0].y);
+        for (let j = 1; j < stroke.length; j++) {
+            ctx.lineTo(stroke[j].x, stroke[j].y);
+        }
+        ctx.stroke();
+    }
+
+    // Draw user's current path
+    if (traceState.isDrawing && traceState.userPath.length > 1) {
+        ctx.strokeStyle = '#ff4500';
+        ctx.lineWidth = 25;
+        ctx.beginPath();
+        ctx.moveTo(traceState.userPath[0].x, traceState.userPath[0].y);
+        for (let i = 1; i < traceState.userPath.length; i++) {
+            ctx.lineTo(traceState.userPath[i].x, traceState.userPath[i].y);
+        }
+        ctx.stroke();
+    }
+}
+
+function getTracePointerPosition(e) {
+    const rect = traceState.canvas.getBoundingClientRect();
+    let clientX, clientY;
+    if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    const scaleX = traceState.canvas.width / rect.width;
+    const scaleY = traceState.canvas.height / rect.height;
+    return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+    };
+}
+
+function handleTraceStart(e) {
+    e.preventDefault();
+    const pos = getTracePointerPosition(e);
+    traceState.userPath = [pos];
+    traceState.isDrawing = true;
+}
+
+function handleTraceMove(e) {
+    if (!traceState.isDrawing) return;
+    e.preventDefault();
+    const pos = getTracePointerPosition(e);
+    traceState.userPath.push(pos);
+    drawTraceBoard();
+}
+
+function handleTraceEnd(e) {
+    if (!traceState.isDrawing) return;
+    e.preventDefault();
+    traceState.isDrawing = false;
+
+    if (checkStrokeCompletion()) {
+        traceState.currentStrokeIndex++;
+        if (traceState.currentStrokeIndex >= traceState.question.strokes.length) {
+            // Character complete
+            if (traceState.question.end_audio) {
+                playAudio(traceState.question.end_audio);
+            }
+            const title = document.getElementById('character-tracing-title');
+            title.textContent = `「${traceState.question.character}」は「${traceState.question.example_word}」の「${traceState.question.character}」だよ！`;
+            setTimeout(() => {
+                // Move to next character or reward screen
+                currentQuestionIndex++;
+                if (currentQuestionIndex < currentQuestions.length) {
+                    initCharacterTracingGame(currentQuestions[currentQuestionIndex]);
+                } else {
+                    showScreen('reward');
+                }
+            }, 3000);
+        } else {
+            playAudio('assets/sounds/correct.mp3');
+        }
+    } else {
+        playAudio('assets/sounds/incorrect.mp3');
+    }
+
+    traceState.userPath = [];
+    drawTraceBoard();
+}
+
+function checkStrokeCompletion() {
+    const { userPath, question, currentStrokeIndex } = traceState;
+    if (userPath.length < 2) return false;
+
+    const stroke = question.strokes[currentStrokeIndex];
+    const startThreshold = 30;
+    const endThreshold = 30;
+    const pathThreshold = 25;
+
+    const distToStart = Math.hypot(userPath[0].x - stroke[0].x, userPath[0].y - stroke[0].y);
+    const distToEnd = Math.hypot(userPath[userPath.length - 1].x - stroke[stroke.length - 1].x, userPath[userPath.length - 1].y - stroke[stroke.length - 1].y);
+
+    if (distToStart > startThreshold || distToEnd > endThreshold) {
+        return false;
+    }
+
+    // Check if the user's path is reasonably close to the actual stroke path
+    for (const userPoint of userPath) {
+        let minDistance = Infinity;
+        for (let i = 0; i < stroke.length - 1; i++) {
+            const dist = pDistance(userPoint.x, userPoint.y, stroke[i].x, stroke[i].y, stroke[i+1].x, stroke[i+1].y);
+            if (dist < minDistance) {
+                minDistance = dist;
+            }
+        }
+        if (minDistance > pathThreshold) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Helper function to calculate distance from a point to a line segment
+function pDistance(x, y, x1, y1, x2, y2) {
+  const A = x - x1;
+  const B = y - y1;
+  const C = x2 - x1;
+  const D = y2 - y1;
+
+  const dot = A * C + B * D;
+  const len_sq = C * C + D * D;
+  let param = -1;
+  if (len_sq != 0) //in case of 0 length line
+      param = dot / len_sq;
+
+  let xx, yy;
+
+  if (param < 0) {
+    xx = x1;
+    yy = y1;
+  } else if (param > 1) {
+    xx = x2;
+    yy = y2;
+  } else {
+    xx = x1 + param * C;
+    yy = y1 + param * D;
+  }
+
+  const dx = x - xx;
+  const dy = y - yy;
+  return Math.sqrt(dx * dx + dy * dy);
 }

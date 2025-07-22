@@ -175,5 +175,18 @@
         "item_count": 4,
         "options": [2, 3, 4, 5],
         "answer": 4
+    },
+    {
+        "type": "character-tracing",
+        "character": "あ",
+        "question": "「あ」を かくよ",
+        "start_audio": "assets/sounds/write_a_start.mp3",
+        "end_audio": "assets/sounds/a_is_for_arigatou.mp3",
+        "example_word": "ありがとう",
+        "strokes": [
+            [ {"x": 150, "y": 200}, {"x": 350, "y": 200} ],
+            [ {"x": 250, "y": 125}, {"x": 250, "y": 375} ],
+            [ {"x": 400, "y": 175}, {"x": 200, "y": 275}, {"x": 275, "y": 425}, {"x": 175, "y": 325} ]
+        ]
     }
 ]

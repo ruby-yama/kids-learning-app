@@ -1,6 +1,8 @@
 assets/sounds/cat_question.mp3
 assets/sounds/banana_question.mp3
 assets/sounds/rabbit_question.mp3
-assets.sounds/car_question.mp3
+assets/sounds/car_question.mp3
 assets/sounds/how_many_oranges.mp3
 assets/sounds/how_many_cars.mp3
+assets/sounds/write_a_start.mp3
+assets/sounds/a_is_for_arigatou.mp3
