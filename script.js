@@ -99,6 +99,10 @@ function showScreen(screenName) {
         screen.classList.remove('active');
     });
     document.getElementById(`${screenName}-screen`).classList.add('active');
+
+    if (screenName === 'reward') {
+        playAudio('assets/sounds/よくできました.mp3');
+    }
 }
 
 function playAudio(src) {
