@@ -99,10 +99,6 @@ function showScreen(screenName) {
         screen.classList.remove('active');
     });
     document.getElementById(`${screenName}-screen`).classList.add('active');
-
-    if (screenName === 'reward') {
-        playAudio('assets/sounds/よくできました.mp3');
-    }
 }
 
 function playAudio(src) {
@@ -567,7 +563,6 @@ function initCharacterTracingGame(question) {
         canvas,
         ctx,
         currentStrokeIndex: 0,
-        currentWaypointIndex: 0,
         userPath: [],
         isDrawing: false
     };
@@ -581,16 +576,15 @@ function initCharacterTracingGame(question) {
     canvas.addEventListener('pointerdown', handleTraceStart);
     canvas.addEventListener('pointermove', handleTraceMove);
     canvas.addEventListener('pointerup', handleTraceEnd);
-    canvas.addEventListener('pointerleave', handleTraceEnd); // Handle case where pointer leaves canvas
 }
 
 function drawTraceBoard() {
-    const { ctx, canvas, question, currentStrokeIndex, currentWaypointIndex } = traceState;
+    const { ctx, canvas, question, currentStrokeIndex } = traceState;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Draw the full character outline faintly
     ctx.strokeStyle = '#e0e0e0';
-    ctx.lineWidth = 30;
+    ctx.lineWidth = 20;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     question.strokes.forEach(stroke => {
@@ -602,12 +596,11 @@ function drawTraceBoard() {
         ctx.stroke();
     });
 
-    // Draw the waypoints for the current stroke
+    // Draw the current stroke to be traced more prominently
     if (currentStrokeIndex < question.strokes.length) {
         const currentStroke = question.strokes[currentStrokeIndex];
-        
-        // Draw the path for the current stroke
         ctx.strokeStyle = '#a0a0a0';
+        ctx.lineWidth = 20;
         ctx.beginPath();
         ctx.moveTo(currentStroke[0].x, currentStroke[0].y);
         for (let i = 1; i < currentStroke.length; i++) {
@@ -615,16 +608,11 @@ function drawTraceBoard() {
         }
         ctx.stroke();
 
-        // Draw the waypoints
-        currentStroke.forEach((waypoint, index) => {
-            ctx.beginPath();
-            ctx.fillStyle = index < currentWaypointIndex ? 'rgba(40, 167, 69, 0.5)' : 'rgba(0, 123, 255, 0.5)';
-            if (index === currentWaypointIndex) {
-                 ctx.fillStyle = 'rgba(0, 123, 255, 1)'; // Highlight next waypoint
-            }
-            ctx.arc(waypoint.x, waypoint.y, waypoint.radius, 0, Math.PI * 2);
-            ctx.fill();
-        });
+        // Draw starting point indicator
+        ctx.fillStyle = '#007bff';
+        ctx.beginPath();
+        ctx.arc(currentStroke[0].x, currentStroke[0].y, 15, 0, Math.PI * 2);
+        ctx.fill();
     }
 
     // Draw completed strokes
@@ -642,7 +630,7 @@ function drawTraceBoard() {
     // Draw user's current path
     if (traceState.isDrawing && traceState.userPath.length > 1) {
         ctx.strokeStyle = '#ff4500';
-        ctx.lineWidth = 35;
+        ctx.lineWidth = 25;
         ctx.beginPath();
         ctx.moveTo(traceState.userPath[0].x, traceState.userPath[0].y);
         for (let i = 1; i < traceState.userPath.length; i++) {
@@ -658,6 +646,9 @@ function getTracePointerPosition(e) {
     if (e.touches && e.touches.length > 0) {
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
     } else {
         clientX = e.clientX;
         clientY = e.clientY;
@@ -672,26 +663,16 @@ function getTracePointerPosition(e) {
 
 function handleTraceStart(e) {
     e.preventDefault();
+    const pos = getTracePointerPosition(e);
+    traceState.userPath = [pos];
     traceState.isDrawing = true;
-    traceState.userPath = [];
-    const points = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
-    for (const point of points) {
-        const pos = getTracePointerPosition(point);
-        traceState.userPath.push(pos);
-        checkWaypoint(pos);
-    }
-    drawTraceBoard();
 }
 
 function handleTraceMove(e) {
     if (!traceState.isDrawing) return;
     e.preventDefault();
-    const points = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
-    for (const point of points) {
-        const pos = getTracePointerPosition(point);
-        traceState.userPath.push(pos);
-        checkWaypoint(pos);
-    }
+    const pos = getTracePointerPosition(e);
+    traceState.userPath.push(pos);
     drawTraceBoard();
 }
 
@@ -699,68 +680,96 @@ function handleTraceEnd(e) {
     if (!traceState.isDrawing) return;
     e.preventDefault();
     traceState.isDrawing = false;
-    traceState.userPath = [];
 
-    // Check if the stroke was almost completed and give benefit of the doubt
-    const { question, currentStrokeIndex, currentWaypointIndex } = traceState;
-    const currentStroke = question.strokes[currentStrokeIndex];
-    if (currentStroke && currentWaypointIndex < currentStroke.length) {
+    if (checkStrokeCompletion()) {
+        traceState.currentStrokeIndex++;
+        if (traceState.currentStrokeIndex >= traceState.question.strokes.length) {
+            // Character complete
+            if (traceState.question.end_audio) {
+                playAudio(traceState.question.end_audio);
+            }
+            const title = document.getElementById('character-tracing-title');
+            title.textContent = `「${traceState.question.character}」は「${traceState.question.example_word}」の「${traceState.question.character}」だよ！`;
+            setTimeout(() => {
+                // Move to next character or reward screen
+                currentQuestionIndex++;
+                if (currentQuestionIndex < currentQuestions.length) {
+                    initCharacterTracingGame(currentQuestions[currentQuestionIndex]);
+                } else {
+                    showScreen('reward');
+                }
+            }, 3000);
+        } else {
+            playAudio('assets/sounds/correct.mp3');
+        }
+    } else {
         playAudio('assets/sounds/incorrect.mp3');
     }
 
+    traceState.userPath = [];
     drawTraceBoard();
 }
 
-function checkWaypoint(pos) {
-    const { question, currentStrokeIndex, currentWaypointIndex } = traceState;
-    if (currentStrokeIndex >= question.strokes.length) return; // All strokes done
+function checkStrokeCompletion() {
+    const { userPath, question, currentStrokeIndex } = traceState;
+    if (userPath.length < 2) return false;
 
-    const currentStroke = question.strokes[currentStrokeIndex];
-    if (currentWaypointIndex >= currentStroke.length) return; // All waypoints in stroke done
+    const stroke = question.strokes[currentStrokeIndex];
+    const startThreshold = 30;
+    const endThreshold = 30;
+    const pathThreshold = 25;
 
-    const nextWaypoint = currentStroke[currentWaypointIndex];
-    const distance = Math.hypot(pos.x - nextWaypoint.x, pos.y - nextWaypoint.y);
+    const distToStart = Math.hypot(userPath[0].x - stroke[0].x, userPath[0].y - stroke[0].y);
+    const distToEnd = Math.hypot(userPath[userPath.length - 1].x - stroke[stroke.length - 1].x, userPath[userPath.length - 1].y - stroke[stroke.length - 1].y);
 
-    if (distance < nextWaypoint.radius) {
-        traceState.currentWaypointIndex++;
-        playAudio('assets/sounds/correct.mp3'); // Optional: sound for each waypoint
+    if (distToStart > startThreshold || distToEnd > endThreshold) {
+        return false;
+    }
 
-        if (traceState.currentWaypointIndex >= currentStroke.length) {
-            // Stroke completed
-            traceState.currentStrokeIndex++;
-            traceState.currentWaypointIndex = 0;
-            playAudio('assets/sounds/correct.mp3');
-
-            if (traceState.currentStrokeIndex >= question.strokes.length) {
-                // Character completed
-                characterTraceSuccess();
+    // Check if the user's path is reasonably close to the actual stroke path
+    for (const userPoint of userPath) {
+        let minDistance = Infinity;
+        for (let i = 0; i < stroke.length - 1; i++) {
+            const dist = pDistance(userPoint.x, userPoint.y, stroke[i].x, stroke[i].y, stroke[i+1].x, stroke[i+1].y);
+            if (dist < minDistance) {
+                minDistance = dist;
             }
         }
+        if (minDistance > pathThreshold) {
+            return false;
+        }
     }
+
+    return true;
 }
 
-function characterTraceSuccess() {
-    const { question } = traceState;
-    if (question.end_audio) {
-        playAudio(question.end_audio);
-    }
-    const title = document.getElementById('character-tracing-title');
-    title.textContent = `「${question.character}」は「${question.example_word}」の「${question.character}」だよ！`;
-    
-    // Disable further drawing
-    traceState.isDrawing = false;
-    const canvas = document.getElementById('character-tracing-canvas');
-    canvas.removeEventListener('pointerdown', handleTraceStart);
-    canvas.removeEventListener('pointermove', handleTraceMove);
-    canvas.removeEventListener('pointerup', handleTraceEnd);
-    canvas.removeEventListener('pointerleave', handleTraceEnd);
+// Helper function to calculate distance from a point to a line segment
+function pDistance(x, y, x1, y1, x2, y2) {
+  const A = x - x1;
+  const B = y - y1;
+  const C = x2 - x1;
+  const D = y2 - y1;
 
-    setTimeout(() => {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < currentQuestions.length) {
-            initCharacterTracingGame(currentQuestions[currentQuestionIndex]);
-        } else {
-            showScreen('reward');
-        }
-    }, 3000);
+  const dot = A * C + B * D;
+  const len_sq = C * C + D * D;
+  let param = -1;
+  if (len_sq != 0) //in case of 0 length line
+      param = dot / len_sq;
+
+  let xx, yy;
+
+  if (param < 0) {
+    xx = x1;
+    yy = y1;
+  } else if (param > 1) {
+    xx = x2;
+    yy = y2;
+  } else {
+    xx = x1 + param * C;
+    yy = y1 + param * D;
+  }
+
+  const dx = x - xx;
+  const dy = y - yy;
+  return Math.sqrt(dx * dx + dy * dy);
 }
