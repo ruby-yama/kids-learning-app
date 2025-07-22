@@ -668,18 +668,26 @@ function getTracePointerPosition(e) {
 
 function handleTraceStart(e) {
     e.preventDefault();
-    const pos = getTracePointerPosition(e);
-    traceState.userPath = [pos];
     traceState.isDrawing = true;
-    checkWaypoint(pos);
+    traceState.userPath = [];
+    const points = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    for (const point of points) {
+        const pos = getTracePointerPosition(point);
+        traceState.userPath.push(pos);
+        checkWaypoint(pos);
+    }
+    drawTraceBoard();
 }
 
 function handleTraceMove(e) {
     if (!traceState.isDrawing) return;
     e.preventDefault();
-    const pos = getTracePointerPosition(e);
-    traceState.userPath.push(pos);
-    checkWaypoint(pos);
+    const points = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    for (const point of points) {
+        const pos = getTracePointerPosition(point);
+        traceState.userPath.push(pos);
+        checkWaypoint(pos);
+    }
     drawTraceBoard();
 }
 
