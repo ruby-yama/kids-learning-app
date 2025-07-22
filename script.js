@@ -32,8 +32,14 @@ retryButton.addEventListener('click', () => {
 
 document.querySelectorAll('.game-select-button').forEach(button => {
     button.addEventListener('click', (e) => {
-        const gameType = e.target.dataset.gameType;
+        const gameType = e.currentTarget.dataset.gameType;
         startGame(gameType);
+    });
+});
+
+document.querySelectorAll('.back-button').forEach(button => {
+    button.addEventListener('click', () => {
+        showScreen('game-selection');
     });
 });
 
@@ -181,6 +187,9 @@ function checkAnswer(selectedOption, selectedButton) {
 // --- Line Drawing Game ---
 
 function initLineDrawingGame(question) {
+    if (question.question_audio) {
+        playAudio(question.question_audio);
+    }
     lineDrawingCanvas.width = 800;
     lineDrawingCanvas.height = 500;
 

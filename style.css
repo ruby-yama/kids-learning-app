@@ -101,16 +101,39 @@ button:hover {
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: var(--gray);
+    color: var(--dark-gray);
+    font-size: 18px;
+    padding: 10px 20px;
+}
+
 #start-button, #retry-button {
     background-color: var(--accent-color);
 }
 
 .game-select-button {
     background-color: var(--primary-color);
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 15px auto;
-    width: 300px;
+    width: 350px;
+    gap: 15px;
 }
+
+.game-select-button .icon {
+    font-size: 32px;
+}
+
+.game-select-button[data-game-type="multiple-choice"] { background-color: #4CAF50; }
+.game-select-button[data-game-type="line-drawing"] { background-color: #2196F3; }
+.game-select-button[data-game-type="maze"] { background-color: #f44336; }
+.game-select-button[data-game-type="counting"] { background-color: #FF9800; }
+.game-select-button[data-game-type="character-tracing"] { background-color: #9C27B0; }
 
 /* --- Game Screens --- */
 #options-container, #counting-options-container {
