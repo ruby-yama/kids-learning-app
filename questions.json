@@ -26,12 +26,45 @@
         "answer": "りんご"
     },
     {
+        "type": "multiple-choice",
+        "question": "「ねこ」はどっち？",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"},
+            {"name": "くるま", "image": "assets/images/car.webp"}
+        ],
+        "answer": "ねこ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "「バナナ」はどっち？",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "バナナ", "image": "assets/images/banana.webp", "audio": "assets/sounds/banana.mp3"},
+            {"name": "みかん", "image": "assets/images/orange.webp", "audio": "assets/sounds/orange.mp3"}
+        ],
+        "answer": "バナナ"
+    },
+    {
         "type": "line-drawing",
         "question": "なかまをみつけて せんでつなごう！",
         "pairs": [
             {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "どうぶつ"}},
             {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "くだもの"}},
             {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "のりもの"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "おなじものを せんでつなごう！",
+        "pairs": [
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "ねこ", "image": "assets/images/cat.webp"}},
+            {"item1": {"name": "バナナ", "image": "assets/images/banana.webp"}, "item2": {"name": "バナナ", "image": "assets/images/banana.webp"}},
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"},"item2": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}}
         ]
     },
     {
@@ -47,6 +80,19 @@
         ]
     },
     {
+        "type": "maze",
+        "question": "うえからしたまで いけるかな？",
+        "map": [
+            [1, "S", 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
         "type": "counting",
         "question": "りんごはいくつあるかな？",
         "question_audio": "assets/sounds/how_many_apples.mp3",
@@ -56,5 +102,15 @@
         "item_count": 5,
         "options": [3, 4, 5, 6],
         "answer": 5
+    },
+    {
+        "type": "counting",
+        "question": "みかんはいくつあるかな？",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/orange.webp",
+        "item_count": 7,
+        "options": [5, 6, 7, 8],
+        "answer": 7
     }
 ]

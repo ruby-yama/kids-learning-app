@@ -292,11 +292,22 @@ let currentLine = {};
 
 function getPointerPosition(e) {
     const rect = lineDrawingCanvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    let clientX, clientY;
+    if (e.touches && e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
+    } else {
+        clientX = e.clientX;
+        clientY = e.clientY;
+    }
+    const scaleX = lineDrawingCanvas.width / rect.width;
+    const scaleY = lineDrawingCanvas.height / rect.height;
     return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
     };
 }
 
@@ -310,6 +321,7 @@ lineDrawingCanvas.addEventListener('pointerdown', (e) => {
         isDrawing = true;
         lineDrawingState.selectedItem = clickedItem;
         currentLine = { start: clickedItem, end: pos };
+        drawLineDrawingBoard(); // Redraw to show selection
     }
 });
 
@@ -319,7 +331,7 @@ lineDrawingCanvas.addEventListener('pointermove', (e) => {
     const pos = getPointerPosition(e);
     currentLine.end = pos;
     drawLineDrawingBoard();
-    
+
     const { start, end } = currentLine;
     lineDrawingCtx.beginPath();
     lineDrawingCtx.moveTo(start.x, start.y);
@@ -335,21 +347,23 @@ lineDrawingCanvas.addEventListener('pointerup', (e) => {
     const pos = getPointerPosition(e);
     const targetItem = getClickedItem(pos.x, pos.y);
 
-    if (targetItem && lineDrawingState.selectedItem && targetItem.id === lineDrawingState.selectedItem.matchId) {
+    if (targetItem && lineDrawingState.selectedItem && targetItem.id !== lineDrawingState.selectedItem.id && targetItem.matchId === lineDrawingState.selectedItem.id) {
         targetItem.matched = true;
-        lineDrawingState.selectedItem.matched = true;
+        const sourceItem = lineDrawingState.items.find(item => item.id === lineDrawingState.selectedItem.id);
+        if(sourceItem) sourceItem.matched = true;
+
         lineDrawingState.lines.push({ start: lineDrawingState.selectedItem, end: targetItem });
         playAudio('assets/sounds/correct.mp3');
 
         if (lineDrawingState.lines.length === lineDrawingState.items.length / 2) {
-            setTimeout(() => showScreen('reward'), 500);
+            setTimeout(() => showScreen('reward'), 800);
         }
     } else {
         if (lineDrawingState.selectedItem) {
              playAudio('assets/sounds/incorrect.mp3');
         }
     }
-    
+
     isDrawing = false;
     lineDrawingState.selectedItem = null;
     currentLine = {};
@@ -369,10 +383,14 @@ function initMazeGame(question) {
     const tileSize = 50;
 
     let playerPos = { x: 0, y: 0 };
+    let goalPos = { x: 0, y: 0 };
     for (let y = 0; y < map.length; y++) {
         for (let x = 0; x < map[y].length; x++) {
             if (map[y][x] === 'S') {
                 playerPos = { x, y };
+            }
+            if (map[y][x] === 'G') {
+                goalPos = { x, y };
             }
         }
     }
@@ -381,7 +399,7 @@ function initMazeGame(question) {
         map,
         tileSize,
         playerPos,
-        goalPos: { x: 8, y: 4 }, // Hardcoded for now
+        goalPos, // Use dynamic goal position
         ctx,
         canvas
     };
