@@ -102,6 +102,13 @@ async function startGame(gameType) {
 }
 
 function showScreen(screenName) {
+    // Stop watermelon BGM when leaving the screen
+    const watermelonBgm = document.getElementById('watermelon-bgm');
+    if (watermelonBgm) {
+        watermelonBgm.pause();
+        watermelonBgm.currentTime = 0;
+    }
+
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
     });
@@ -109,6 +116,45 @@ function showScreen(screenName) {
 
     if (screenName === 'reward') {
         playAudio('assets/sounds/よくできました.mp3');
+    } else if (screenName === 'watermelon') {
+        // Start watermelon BGM when entering the screen
+        if (watermelonBgm) {
+            console.log('Attempting to play watermelon BGM');
+            
+            // Check if audio file is loaded
+            watermelonBgm.addEventListener('loadeddata', () => {
+                console.log('BGM file loaded successfully');
+            });
+            
+            watermelonBgm.addEventListener('error', (e) => {
+                console.error('BGM file loading error:', e);
+            });
+            
+            // Add user interaction to enable autoplay
+            const playBGM = () => {
+                watermelonBgm.play().then(() => {
+                    console.log('BGM started playing');
+                }).catch(error => {
+                    console.error('Could not play watermelon BGM:', error);
+                });
+            };
+            
+            // Try to play immediately
+            playBGM();
+            
+            // If autoplay fails, play on first user interaction
+            const enableBGM = () => {
+                console.log('User interaction detected, trying to play BGM');
+                playBGM();
+                document.removeEventListener('click', enableBGM);
+                document.removeEventListener('touchstart', enableBGM);
+            };
+            
+            document.addEventListener('click', enableBGM, { once: true });
+            document.addEventListener('touchstart', enableBGM, { once: true });
+        } else {
+            console.error('Watermelon BGM element not found');
+        }
     }
 }
 
