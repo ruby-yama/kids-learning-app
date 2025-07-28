@@ -13,6 +13,7 @@ const countingScreen = document.getElementById('counting-screen');
 const countingQuestionContainer = document.getElementById('counting-question-container');
 const countingOptionsContainer = document.getElementById('counting-options-container');
 const drawingScreen = document.getElementById('drawing-screen');
+const watermelonScreen = document.getElementById('watermelon-screen');
 
 // --- Canvas setup ---
 const lineDrawingCanvas = document.getElementById('line-drawing-canvas');
@@ -95,6 +96,8 @@ async function startGame(gameType) {
     } else if (gameType === 'drawing') {
         showScreen('drawing');
         initDrawingMode();
+    } else if (gameType === 'watermelon') {
+        showScreen('watermelon');
     }
 }
 

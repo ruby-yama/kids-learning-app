@@ -24,6 +24,7 @@
                 <button class="game-select-button" data-game-type="counting"><span class="icon">🍎</span>かずあてゲーム</button>
                 <button class="game-select-button" data-game-type="character-tracing"><span class="icon">✍️</span>もじなぞりゲーム</button>
                 <button class="game-select-button" data-game-type="drawing"><span class="icon">🎨</span>おえかきモード</button>
+                <button class="game-select-button" data-game-type="watermelon"><span class="icon">🍉</span>スイカゲーム</button>
             </div>
         </div>
         <div id="question-screen" class="screen">
@@ -75,6 +76,13 @@
                 <button id="clear-canvas" class="tool-button">🗑️ クリア</button>
             </div>
             <canvas id="drawing-canvas" width="600" height="400"></canvas>
+        </div>
+        <div id="watermelon-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>スイカゲーム</h2>
+            <div class="watermelon-container">
+                <iframe id="watermelon-iframe" src="https://jolly-starburst-cd5f9a.netlify.app/" frameborder="0" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
