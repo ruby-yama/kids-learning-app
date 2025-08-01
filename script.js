@@ -98,6 +98,9 @@ async function startGame(gameType) {
         initDrawingMode();
     } else if (gameType === 'watermelon') {
         showScreen('watermelon');
+    } else if (gameType === 'number-drop') {
+        showScreen('number-drop');
+        initNumberDropGame();
     }
 }
 
@@ -1070,6 +1073,167 @@ function handleTouchMove(e) {
 
 function handleTouchEnd(e) {
     e.preventDefault();
-    const mouseEvent = new MouseEvent('mouseup', {});
-    drawingState.canvas.dispatchEvent(mouseEvent);
+    drawingState.isDrawing = false;
+}
+
+// --- Number Drop Game Logic ---
+let numberDropState = {
+    canvas: null,
+    ctx: null,
+    numbers: [],
+    tappedNumbers: new Set(),
+    gameRunning: false,
+    animationId: null
+};
+
+function initNumberDropGame() {
+    const canvas = document.getElementById('number-drop-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    numberDropState.canvas = canvas;
+    numberDropState.ctx = ctx;
+    numberDropState.numbers = [];
+    numberDropState.tappedNumbers = new Set();
+    numberDropState.gameRunning = true;
+    
+    // Update score display
+    updateNumberDropScore();
+    
+    // Add click event listener
+    canvas.addEventListener('click', handleNumberClick);
+    canvas.addEventListener('touchstart', handleNumberTouch);
+    
+    // Start spawning numbers
+    spawnNumber();
+    
+    // Start game loop
+    gameLoop();
+}
+
+function spawnNumber() {
+    if (!numberDropState.gameRunning) return;
+    
+    // Create a new falling number
+    const number = {
+        value: Math.floor(Math.random() * 10), // 0-9
+        x: Math.random() * (numberDropState.canvas.width - 80) + 40,
+        y: -50,
+        speed: 2 + Math.random() * 3,
+        size: 40 + Math.random() * 20,
+        color: `hsl(${Math.random() * 360}, 70%, 50%)`,
+        id: Date.now() + Math.random()
+    };
+    
+    numberDropState.numbers.push(number);
+    
+    // Schedule next number spawn
+    setTimeout(spawnNumber, 1000 + Math.random() * 2000);
+}
+
+function gameLoop() {
+    if (!numberDropState.gameRunning) return;
+    
+    const ctx = numberDropState.ctx;
+    const canvas = numberDropState.canvas;
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Update and draw numbers
+    numberDropState.numbers = numberDropState.numbers.filter(number => {
+        // Update position
+        number.y += number.speed;
+        
+        // Remove if off screen
+        if (number.y > canvas.height + 50) {
+            return false;
+        }
+        
+        // Draw number
+        ctx.save();
+        ctx.font = `bold ${number.size}px Arial`;
+        ctx.fillStyle = number.color;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 3;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        // Draw outline
+        ctx.strokeText(number.value.toString(), number.x, number.y);
+        // Draw fill
+        ctx.fillText(number.value.toString(), number.x, number.y);
+        
+        ctx.restore();
+        
+        return true;
+    });
+    
+    numberDropState.animationId = requestAnimationFrame(gameLoop);
+}
+
+function handleNumberClick(e) {
+    const rect = numberDropState.canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    checkNumberHit(x, y);
+}
+
+function handleNumberTouch(e) {
+    e.preventDefault();
+    const rect = numberDropState.canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    
+    checkNumberHit(x, y);
+}
+
+function checkNumberHit(x, y) {
+    for (let i = numberDropState.numbers.length - 1; i >= 0; i--) {
+        const number = numberDropState.numbers[i];
+        const distance = Math.sqrt((x - number.x) ** 2 + (y - number.y) ** 2);
+        
+        if (distance < number.size / 2) {
+            // Hit!
+            numberDropState.tappedNumbers.add(number.value);
+            numberDropState.numbers.splice(i, 1);
+            
+            // Play number audio
+            playAudio(`assets/sounds/${number.value}.mp3`);
+            
+            // Update score
+            updateNumberDropScore();
+            
+            // Check if game is complete
+            if (numberDropState.tappedNumbers.size === 10) {
+                completeNumberDropGame();
+            }
+            
+            break;
+        }
+    }
+}
+
+function updateNumberDropScore() {
+    const scoreElement = document.getElementById('tapped-numbers');
+    if (scoreElement) {
+        scoreElement.textContent = numberDropState.tappedNumbers.size;
+    }
+}
+
+function completeNumberDropGame() {
+    numberDropState.gameRunning = false;
+    
+    if (numberDropState.animationId) {
+        cancelAnimationFrame(numberDropState.animationId);
+    }
+    
+    // Clear canvas
+    numberDropState.ctx.clearRect(0, 0, numberDropState.canvas.width, numberDropState.canvas.height);
+    
+    // Show completion message
+    setTimeout(() => {
+        showScreen('reward');
+    }, 500);
 }
