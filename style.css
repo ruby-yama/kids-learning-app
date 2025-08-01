@@ -460,17 +460,34 @@ canvas {
 }
 
 /* Number Drop Game Styles */
+#number-drop-screen {
+    position: relative;
+}
+
+#number-drop-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.3;
+}
+
 #number-drop-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
+    position: relative;
+    z-index: 1;
 }
 
 #number-drop-canvas {
     border: 3px solid var(--primary-color);
     border-radius: 15px;
-    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    background: rgba(227, 242, 253, 0.8);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     cursor: pointer;
 }
@@ -482,7 +499,19 @@ canvas {
     color: var(--primary-color);
     margin: 20px 0;
     padding: 15px;
-    background: var(--white);
+    background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}
+
+#number-drop-screen .back-button,
+#number-drop-screen h2 {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
 }

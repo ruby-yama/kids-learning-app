@@ -1096,6 +1096,13 @@ function initNumberDropGame() {
     numberDropState.tappedNumbers = new Set();
     numberDropState.gameRunning = true;
     
+    // Set background video volume
+    const bgVideo = document.getElementById('number-drop-bg-video');
+    if (bgVideo) {
+        bgVideo.volume = 0.1; // Low volume
+        bgVideo.muted = false;
+    }
+    
     // Update score display
     updateNumberDropScore();
     
@@ -1126,8 +1133,8 @@ function spawnNumber() {
     
     numberDropState.numbers.push(number);
     
-    // Schedule next number spawn
-    setTimeout(spawnNumber, 1000 + Math.random() * 2000);
+    // Schedule next number spawn (faster timing)
+    setTimeout(spawnNumber, 500 + Math.random() * 1000);
 }
 
 function gameLoop() {
