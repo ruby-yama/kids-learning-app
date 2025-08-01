@@ -112,6 +112,13 @@ function showScreen(screenName) {
         watermelonBgm.currentTime = 0;
     }
 
+    // Stop number drop background video when leaving the screen
+    const numberDropVideo = document.getElementById('number-drop-bg-video');
+    if (numberDropVideo && screenName !== 'number-drop') {
+        numberDropVideo.pause();
+        numberDropVideo.currentTime = 0;
+    }
+
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
     });
@@ -1096,11 +1103,23 @@ function initNumberDropGame() {
     numberDropState.tappedNumbers = new Set();
     numberDropState.gameRunning = true;
     
-    // Set background video volume
+    // Set background video volume and play
     const bgVideo = document.getElementById('number-drop-bg-video');
     if (bgVideo) {
         bgVideo.volume = 0.1; // Low volume
         bgVideo.muted = false;
+        bgVideo.currentTime = 0;
+        bgVideo.play().catch(e => {
+            console.log('Video autoplay failed, will play on user interaction:', e);
+            // Fallback: play on first user interaction
+            const playOnInteraction = () => {
+                bgVideo.play();
+                document.removeEventListener('click', playOnInteraction);
+                document.removeEventListener('touchstart', playOnInteraction);
+            };
+            document.addEventListener('click', playOnInteraction);
+            document.addEventListener('touchstart', playOnInteraction);
+        });
     }
     
     // Update score display
@@ -1121,12 +1140,13 @@ function spawnNumber() {
     if (!numberDropState.gameRunning) return;
     
     // Create a new falling number
+    const size = 40 + Math.random() * 20;
     const number = {
         value: Math.floor(Math.random() * 10), // 0-9
-        x: Math.random() * (numberDropState.canvas.width - 80) + 40,
+        x: Math.random() * (numberDropState.canvas.width - size * 2) + size,
         y: -50,
         speed: 2 + Math.random() * 3,
-        size: 40 + Math.random() * 20,
+        size: size,
         color: `hsl(${Math.random() * 360}, 70%, 50%)`,
         id: Date.now() + Math.random()
     };
