@@ -22,12 +22,13 @@
                 <button class="game-select-button" data-game-type="line-drawing"><span class="icon">✏️</span>せんつなぎゲーム</button>
                 <button class="game-select-button" data-game-type="maze"><span class="icon">🗺️</span>めいろゲーム</button>
                 <button class="game-select-button" data-game-type="counting"><span class="icon">🍎</span>かずあてゲーム</button>
-                <button class="game-select-button" data-game-type="character-tracing"><span class="icon">✍️</span>もじなぞりゲーム</button>
+
                 <button class="game-select-button" data-game-type="drawing"><span class="icon">🎨</span>おえかきモード</button>
                 <button class="game-select-button" data-game-type="watermelon"><span class="icon">🍉</span>スイカゲーム</button>
                 <button class="game-select-button" data-game-type="number-drop"><span class="icon">🔢</span>すうじパネル</button>
                 <button class="game-select-button" data-game-type="dot-connect"><span class="icon">🍎</span>てんつなぎリンゴ</button>
                 <button class="game-select-button" data-game-type="letter-trace"><span class="icon">✏️</span>もじなぞり</button>
+                <button class="game-select-button" data-game-type="hiragana-trace"><span class="icon">✏️</span>ひらがななぞり</button>
                 <button class="game-select-button" data-game-type="dot-trace"><span class="icon">⭐</span>てんなぞり</button>
 
                 <button class="game-select-button" data-game-type="spot-difference"><span class="icon">🔍</span>まちがいさがし</button>
@@ -69,10 +70,12 @@
             <h1>よくできました！</h1>
             <button id="retry-button">もういちど</button>
         </div>
-        <div id="character-tracing-screen" class="screen">
+        <div id="hiragana-trace-screen" class="screen">
             <button class="back-button">もどる</button>
-            <h2 id="character-tracing-title"></h2>
-            <canvas id="character-tracing-canvas" width="500" height="500"></canvas>
+            <h2 id="hiragana-trace-title">ひらがなをなぞってみよう！</h2>
+            <div id="hiragana-character-display"></div>
+            <canvas id="hiragana-trace-canvas" width="600" height="400"></canvas>
+            <div id="hiragana-progress"></div>
         </div>
         <div id="drawing-screen" class="screen">
             <button class="back-button">もどる</button>

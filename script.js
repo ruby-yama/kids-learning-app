@@ -97,10 +97,7 @@ async function startGame(gameType) {
         if(currentQuestions.length === 0) return;
         showScreen('counting');
         showCountingQuestion();
-    } else if (gameType === 'character-tracing') {
-        if(currentQuestions.length === 0) return;
-        showScreen('character-tracing');
-        initCharacterTracingGame(currentQuestions[0]);
+
     } else if (gameType === 'drawing') {
         showScreen('drawing');
         initDrawingMode();
@@ -115,6 +112,9 @@ async function startGame(gameType) {
     } else if (gameType === 'letter-trace') {
         showScreen('letter-trace');
         initLetterTraceGame();
+    } else if (gameType === 'hiragana-trace') {
+        showScreen('hiragana-trace');
+        initHiraganaTraceGame();
     } else if (gameType === 'dot-trace') {
         showScreen('dot-trace');
         initDotTraceGame();
@@ -642,138 +642,95 @@ function checkCountingAnswer(selectedOption, selectedButton) {
     }, 1500);
 }
 
-// --- Character Tracing Game ---
 
-let traceState = {};
 
-function initCharacterTracingGame(question) {
-    const canvas = document.getElementById('character-tracing-canvas');
+
+
+
+
+
+// --- Hiragana Trace Game ---
+let hiraganaTraceState = {
+    canvas: null,
+    ctx: null,
+    isDrawing: false,
+    currentCharacterIndex: 0,
+    userPath: [],
+    characters: [
+        'あ', 'い', 'う', 'え', 'お',
+        'か', 'き', 'く', 'け', 'こ',
+        'さ', 'し', 'す', 'せ', 'そ',
+        'た', 'ち', 'つ', 'て', 'と',
+        'な', 'に', 'ぬ', 'ね', 'の',
+        'は', 'ひ', 'ふ', 'へ', 'ほ',
+        'ま', 'み', 'む', 'め', 'も',
+        'や', 'ゆ', 'よ',
+        'ら', 'り', 'る', 'れ', 'ろ',
+        'わ', 'を', 'ん'
+    ]
+};
+
+function initHiraganaTraceGame() {
+    const canvas = document.getElementById('hiragana-trace-canvas');
     const ctx = canvas.getContext('2d');
-    const title = document.getElementById('character-tracing-title');
-    title.textContent = question.question;
-
-    traceState = {
-        question,
-        canvas,
-        ctx,
-        currentStrokeIndex: 0,
-        userPath: [],
-        isDrawing: false
-    };
-
-    if (question.start_audio) {
-        playAudio(question.start_audio);
-    }
-
-    drawTraceBoard();
-
-    canvas.addEventListener('pointerdown', handleTraceStart);
-    canvas.addEventListener('pointermove', handleTraceMove);
-    canvas.addEventListener('pointerup', handleTraceEnd);
+    
+    hiraganaTraceState.canvas = canvas;
+    hiraganaTraceState.ctx = ctx;
+    hiraganaTraceState.currentCharacterIndex = 0;
+    hiraganaTraceState.userPath = [];
+    hiraganaTraceState.isDrawing = false;
+    
+    // イベントリスナーを追加
+    canvas.addEventListener('pointerdown', handleHiraganaTraceStart);
+    canvas.addEventListener('pointermove', handleHiraganaTraceMove);
+    canvas.addEventListener('pointerup', handleHiraganaTraceEnd);
+    
+    // 最初の文字を表示
+    showCurrentHiraganaCharacter();
+    drawHiraganaTraceCanvas();
 }
 
-function drawTraceBoard() {
-    const { ctx, canvas, question, currentStrokeIndex } = traceState;
+function showCurrentHiraganaCharacter() {
+    const character = hiraganaTraceState.characters[hiraganaTraceState.currentCharacterIndex];
+    const display = document.getElementById('hiragana-character-display');
+    const progress = document.getElementById('hiragana-progress');
+    
+    display.textContent = character;
+    progress.textContent = `${hiraganaTraceState.currentCharacterIndex + 1} / ${hiraganaTraceState.characters.length}`;
+    
+    // 音声再生（もしあれば）
+    playAudio(`assets/sounds/${character}_nazotte.mp3`);
+}
+
+function drawHiraganaTraceCanvas() {
+    const { ctx, canvas } = hiraganaTraceState;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // 背景に薄く完成形を表示
-    ctx.strokeStyle = '#f0f0f0';
-    ctx.lineWidth = 20;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    question.strokes.forEach(stroke => {
-        ctx.beginPath();
-        ctx.moveTo(stroke[0].x, stroke[0].y);
-        for (let i = 1; i < stroke.length; i++) {
-            ctx.lineTo(stroke[i].x, stroke[i].y);
-        }
-        ctx.stroke();
-    });
-
-    // 現在のストロークを表示
-    if (currentStrokeIndex < question.strokes.length) {
-        const currentStroke = question.strokes[currentStrokeIndex];
-        
-        // ストロークのパスを表示
-        ctx.strokeStyle = '#a0a0a0';
-        ctx.lineWidth = 20;
-        ctx.beginPath();
-        ctx.moveTo(currentStroke[0].x, currentStroke[0].y);
-        for (let i = 1; i < currentStroke.length; i++) {
-            ctx.lineTo(currentStroke[i].x, currentStroke[i].y);
-        }
-        ctx.stroke();
-
-        // 書き順の矢印を表示
-        ctx.strokeStyle = '#4a90e2';
-        ctx.lineWidth = 3;
-        for (let i = 0; i < currentStroke.length - 1; i++) {
-            const start = currentStroke[i];
-            const end = currentStroke[i + 1];
-            const dx = end.x - start.x;
-            const dy = end.y - start.y;
-            const angle = Math.atan2(dy, dx);
-            const length = Math.sqrt(dx * dx + dy * dy);
-            
-            // 矢印の先端の大きさ
-            const arrowSize = 15;
-            // 矢印の位置（線の中間点）
-            const midX = (start.x + end.x) / 2;
-            const midY = (start.y + end.y) / 2;
-            
-            ctx.beginPath();
-            ctx.moveTo(midX - arrowSize * Math.cos(angle - Math.PI / 6), midY - arrowSize * Math.sin(angle - Math.PI / 6));
-            ctx.lineTo(midX, midY);
-            ctx.lineTo(midX - arrowSize * Math.cos(angle + Math.PI / 6), midY - arrowSize * Math.sin(angle + Math.PI / 6));
-            ctx.stroke();
-        }
-
-        // 開始点を強調表示
-        ctx.fillStyle = '#007bff';
-        ctx.beginPath();
-        ctx.arc(currentStroke[0].x, currentStroke[0].y, 15, 0, Math.PI * 2);
-        ctx.fill();
-        
-        // 開始点の周りに点滅エフェクト
-        const pulseSize = 20 + Math.sin(Date.now() / 200) * 5;
-        ctx.strokeStyle = '#007bff';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(currentStroke[0].x, currentStroke[0].y, pulseSize, 0, Math.PI * 2);
-        ctx.stroke();
-    }
-
-    // 完了したストロークを表示
-    ctx.strokeStyle = '#28a745';
-    ctx.lineWidth = 20;
-    for (let i = 0; i < currentStrokeIndex; i++) {
-        const stroke = question.strokes[i];
-        ctx.beginPath();
-        ctx.moveTo(stroke[0].x, stroke[0].y);
-        for (let j = 1; j < stroke.length; j++) {
-            ctx.lineTo(stroke[j].x, stroke[j].y);
-        }
-        ctx.stroke();
-    }
-
-    // ユーザーの入力を表示
-    if (traceState.isDrawing && traceState.userPath.length > 1) {
+    
+    // 背景に薄く文字を表示
+    const character = hiraganaTraceState.characters[hiraganaTraceState.currentCharacterIndex];
+    ctx.font = '200px "M PLUS Rounded 1c", sans-serif';
+    ctx.fillStyle = '#f0f0f0';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(character, canvas.width / 2, canvas.height / 2);
+    
+    // ユーザーの描画を表示
+    if (hiraganaTraceState.userPath.length > 1) {
         ctx.strokeStyle = '#ff4500';
-        ctx.lineWidth = 25;
+        ctx.lineWidth = 8;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.beginPath();
-        ctx.moveTo(traceState.userPath[0].x, traceState.userPath[0].y);
-        for (let i = 1; i < traceState.userPath.length; i++) {
-            ctx.lineTo(traceState.userPath[i].x, traceState.userPath[i].y);
+        ctx.moveTo(hiraganaTraceState.userPath[0].x, hiraganaTraceState.userPath[0].y);
+        for (let i = 1; i < hiraganaTraceState.userPath.length; i++) {
+            ctx.lineTo(hiraganaTraceState.userPath[i].x, hiraganaTraceState.userPath[i].y);
         }
         ctx.stroke();
     }
-
-    // アニメーションの更新
-    requestAnimationFrame(drawTraceBoard);
 }
 
-function getTracePointerPosition(e) {
-    const rect = traceState.canvas.getBoundingClientRect();
+function getHiraganaPointerPosition(e) {
+    const rect = hiraganaTraceState.canvas.getBoundingClientRect();
     let clientX, clientY;
     if (e.touches && e.touches.length > 0) {
         clientX = e.touches[0].clientX;
@@ -785,167 +742,58 @@ function getTracePointerPosition(e) {
         clientX = e.clientX;
         clientY = e.clientY;
     }
-    const scaleX = traceState.canvas.width / rect.width;
-    const scaleY = traceState.canvas.height / rect.height;
+    const scaleX = hiraganaTraceState.canvas.width / rect.width;
+    const scaleY = hiraganaTraceState.canvas.height / rect.height;
     return {
         x: (clientX - rect.left) * scaleX,
         y: (clientY - rect.top) * scaleY
     };
 }
 
-function handleTraceStart(e) {
+function handleHiraganaTraceStart(e) {
     e.preventDefault();
-    const pos = getTracePointerPosition(e);
-    traceState.userPath = [pos];
-    traceState.isDrawing = true;
+    const pos = getHiraganaPointerPosition(e);
+    hiraganaTraceState.userPath = [pos];
+    hiraganaTraceState.isDrawing = true;
+    drawHiraganaTraceCanvas();
 }
 
-function handleTraceMove(e) {
-    if (!traceState.isDrawing) return;
+function handleHiraganaTraceMove(e) {
+    if (!hiraganaTraceState.isDrawing) return;
     e.preventDefault();
-    const pos = getTracePointerPosition(e);
-    traceState.userPath.push(pos);
-    drawTraceBoard();
+    const pos = getHiraganaPointerPosition(e);
+    hiraganaTraceState.userPath.push(pos);
+    drawHiraganaTraceCanvas();
 }
 
-function handleTraceEnd(e) {
-    if (!traceState.isDrawing) return;
+function handleHiraganaTraceEnd(e) {
+    if (!hiraganaTraceState.isDrawing) return;
     e.preventDefault();
-    traceState.isDrawing = false;
-
-    if (checkStrokeCompletion()) {
-        traceState.currentStrokeIndex++;
-        if (traceState.currentStrokeIndex >= traceState.question.strokes.length) {
-            // Character complete
-            if (traceState.question.end_audio) {
-                playAudio(traceState.question.end_audio);
+    hiraganaTraceState.isDrawing = false;
+    
+    // 簡単な判定（描画があれば成功とする）
+    if (hiraganaTraceState.userPath.length > 10) {
+        playAudio('assets/sounds/correct.mp3');
+        
+        setTimeout(() => {
+            // 次の文字へ
+            hiraganaTraceState.currentCharacterIndex++;
+            if (hiraganaTraceState.currentCharacterIndex >= hiraganaTraceState.characters.length) {
+                // 全ての文字が完了
+                showScreen('reward');
+            } else {
+                // 次の文字を表示
+                hiraganaTraceState.userPath = [];
+                showCurrentHiraganaCharacter();
+                drawHiraganaTraceCanvas();
             }
-            const title = document.getElementById('character-tracing-title');
-            title.textContent = `「${traceState.question.character}」は「${traceState.question.example_word}」の「${traceState.question.character}」だよ！`;
-            setTimeout(() => {
-                // Move to next character or reward screen
-                currentQuestionIndex++;
-                if (currentQuestionIndex < currentQuestions.length) {
-                    initCharacterTracingGame(currentQuestions[currentQuestionIndex]);
-                } else {
-                    showScreen('reward');
-                }
-            }, 3000);
-        } else {
-            playAudio('assets/sounds/correct.mp3');
-        }
+        }, 1500);
     } else {
         playAudio('assets/sounds/incorrect.mp3');
+        // 描画をクリア
+        hiraganaTraceState.userPath = [];
+        drawHiraganaTraceCanvas();
     }
-
-    traceState.userPath = [];
-    drawTraceBoard();
-}
-
-function checkStrokeCompletion() {
-    const { userPath, question, currentStrokeIndex } = traceState;
-    if (userPath.length < 2) return false;
-
-    const stroke = question.strokes[currentStrokeIndex];
-    const startThreshold = 40; // 開始点の判定範囲を広げる
-    const endThreshold = 40;   // 終了点の判定範囲を広げる
-    const pathThreshold = 40;  // パスからの許容距離を広げる
-    const coverageThreshold = 0.7; // カバー率の要求を70%に下げる
-    const directionThreshold = 0.6; // 方向の一致度の閾値（60%）
-
-    // 1. 開始点と終了点のチェック
-    const distToStart = Math.hypot(userPath[0].x - stroke[0].x, userPath[0].y - stroke[0].y);
-    const distToEnd = Math.hypot(userPath[userPath.length - 1].x - stroke[stroke.length - 1].x, userPath[userPath.length - 1].y - stroke[stroke.length - 1].y);
-
-    if (distToStart > startThreshold || distToEnd > endThreshold) {
-        return false;
-    }
-
-    // 2. ストロークの方向チェック
-    let correctDirections = 0;
-    for (let i = 0; i < userPath.length - 1; i++) {
-        const userDx = userPath[i + 1].x - userPath[i].x;
-        const userDy = userPath[i + 1].y - userPath[i].y;
-        const userAngle = Math.atan2(userDy, userDx);
-
-        // 最も近いストロークセグメントの方向と比較
-        let minAngleDiff = Math.PI;
-        for (let j = 0; j < stroke.length - 1; j++) {
-            const strokeDx = stroke[j + 1].x - stroke[j].x;
-            const strokeDy = stroke[j + 1].y - stroke[j].y;
-            const strokeAngle = Math.atan2(strokeDy, strokeDx);
-            const angleDiff = Math.abs(userAngle - strokeAngle);
-            minAngleDiff = Math.min(minAngleDiff, angleDiff, Math.abs(angleDiff - 2 * Math.PI));
-        }
-
-        if (minAngleDiff < Math.PI / 4) { // 45度以内の差を許容
-            correctDirections++;
-        }
-    }
-
-    const directionAccuracy = correctDirections / (userPath.length - 1);
-    if (directionAccuracy < directionThreshold) {
-        return false;
-    }
-
-    // 3. パスの逸脱チェック
-    for (const userPoint of userPath) {
-        let minDistance = Infinity;
-        for (let i = 0; i < stroke.length - 1; i++) {
-            const dist = pDistance(userPoint.x, userPoint.y, stroke[i].x, stroke[i].y, stroke[i+1].x, stroke[i+1].y);
-            minDistance = Math.min(minDistance, dist);
-        }
-        if (minDistance > pathThreshold) {
-            return false;
-        }
-    }
-
-    // 4. ストロークのカバー率チェック
-    let coveredPoints = 0;
-    for (const strokePoint of stroke) {
-        let minDistance = Infinity;
-        for (let i = 0; i < userPath.length - 1; i++) {
-            const dist = pDistance(strokePoint.x, strokePoint.y, userPath[i].x, userPath[i].y, userPath[i+1].x, userPath[i+1].y);
-            minDistance = Math.min(minDistance, dist);
-        }
-        if (minDistance <= pathThreshold) {
-            coveredPoints++;
-        }
-    }
-
-    const coverage = coveredPoints / stroke.length;
-    return coverage >= coverageThreshold;
-}
-
-// Helper function to calculate distance from a point to a line segment
-function pDistance(x, y, x1, y1, x2, y2) {
-  const A = x - x1;
-  const B = y - y1;
-  const C = x2 - x1;
-  const D = y2 - y1;
-
-  const dot = A * C + B * D;
-  const len_sq = C * C + D * D;
-  let param = -1;
-  if (len_sq != 0) //in case of 0 length line
-      param = dot / len_sq;
-
-  let xx, yy;
-
-  if (param < 0) {
-    xx = x1;
-    yy = y1;
-  } else if (param > 1) {
-    xx = x2;
-    yy = y2;
-  } else {
-    xx = x1 + param * C;
-    yy = y1 + param * D;
-  }
-
-  const dx = x - xx;
-  const dy = y - yy;
-  return Math.sqrt(dx * dx + dy * dy);
 }
 
 // --- Drawing Mode ---

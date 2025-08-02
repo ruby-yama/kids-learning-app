@@ -153,12 +153,13 @@ button:hover {
 .game-select-button[data-game-type="line-drawing"] { background-color: #2196F3; }
 .game-select-button[data-game-type="maze"] { background-color: #f44336; }
 .game-select-button[data-game-type="counting"] { background-color: #FF9800; }
-.game-select-button[data-game-type="character-tracing"] { background-color: #9C27B0; }
+
 .game-select-button[data-game-type="drawing"] { background-color: #E91E63; }
 .game-select-button[data-game-type="watermelon"] { background-color: #4CAF50; }
 .game-select-button[data-game-type="number-drop"] { background-color: #607D8B; }
 .game-select-button[data-game-type="dot-connect"] { background-color: #FF5722; }
 .game-select-button[data-game-type="letter-trace"] { background-color: #795548; }
+.game-select-button[data-game-type="hiragana-trace"] { background-color: #9C27B0; }
 .game-select-button[data-game-type="dot-trace"] { background-color: #FFC107; }
 
 .game-select-button[data-game-type="spot-difference"] { background-color: #009688; }
@@ -395,8 +396,34 @@ canvas {
     }
 }
 
-#character-tracing-canvas {
+
+/* --- Hiragana Trace Game --- */
+#hiragana-trace-canvas {
+    border: 3px solid #333;
+    border-radius: 10px;
+    background-color: #fff;
     touch-action: none;
+    cursor: crosshair;
+}
+
+#hiragana-character-display {
+    font-size: 4rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 20px 0;
+    color: #333;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #ddd;
+}
+
+#hiragana-progress {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
 }
 
 /* --- Drawing Mode --- */
