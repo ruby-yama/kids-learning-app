@@ -125,10 +125,10 @@ button:hover {
 
 #game-selection-screen .game-buttons-container {
     display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 15px;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    gap: 12px;
     width: 100%;
-    max-width: 700px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -139,13 +139,14 @@ button:hover {
     justify-content: center;
     margin: 0;
     width: 100%;
-    gap: 10px;
-    font-size: 20px;
-    padding: 12px 15px;
+    gap: 8px;
+    font-size: 16px;
+    padding: 10px 12px;
+    min-height: 60px;
 }
 
 .game-select-button .icon {
-    font-size: 32px;
+    font-size: 24px;
 }
 
 .game-select-button[data-game-type="multiple-choice"] { background-color: #4CAF50; }
@@ -155,6 +156,14 @@ button:hover {
 .game-select-button[data-game-type="character-tracing"] { background-color: #9C27B0; }
 .game-select-button[data-game-type="drawing"] { background-color: #E91E63; }
 .game-select-button[data-game-type="watermelon"] { background-color: #4CAF50; }
+.game-select-button[data-game-type="number-drop"] { background-color: #607D8B; }
+.game-select-button[data-game-type="dot-connect"] { background-color: #FF5722; }
+.game-select-button[data-game-type="letter-trace"] { background-color: #795548; }
+.game-select-button[data-game-type="dot-trace"] { background-color: #FFC107; }
+
+.game-select-button[data-game-type="spot-difference"] { background-color: #009688; }
+.game-select-button[data-game-type="simple-maze"] { background-color: #CDDC39; }
+.game-select-button[data-game-type="coloring"] { background-color: #FF9800; }
 
 /* --- Game Screens --- */
 #options-container, #counting-options-container {
@@ -514,4 +523,66 @@ canvas {
     border-radius: 10px;
     padding: 10px;
     margin: 10px;
+}
+
+/* --- Dot Connect Game Styles --- */
+#dot-connect-container, #letter-trace-container, #dot-trace-container,
+#spot-difference-container, #simple-maze-container, #coloring-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#dot-connect-canvas, #letter-trace-canvas, #dot-trace-canvas,
+#spot-difference-canvas, #simple-maze-canvas, #coloring-canvas {
+    border: 3px solid var(--primary-color);
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+/* --- Coloring Tools --- */
+#coloring-tools {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.coloring-tool {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.coloring-tool:hover {
+    transform: scale(1.1);
+}
+
+.coloring-tool.active {
+    border-color: #333;
+    transform: scale(1.15);
+}
+
+/* --- Number Drop Back Button --- */
+.number-drop-back-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 16px;
+    padding: 8px 16px;
+    border-radius: 25px;
 }

@@ -14,6 +14,123 @@
     },
     {
         "type": "multiple-choice",
+        "question": "あかいくだものはどれ？",
+        "question_audio": "assets/sounds/apple_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "バナナ", "image": "assets/images/banana.webp", "audio": "assets/sounds/banana.mp3"},
+            {"name": "みかん", "image": "assets/images/orange.webp", "audio": "assets/sounds/orange.mp3"}
+        ],
+        "answer": "りんご"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "きいろいくだものはどれ？",
+        "question_audio": "assets/sounds/banana_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "バナナ", "image": "assets/images/banana.webp", "audio": "assets/sounds/banana.mp3"},
+            {"name": "みかん", "image": "assets/images/orange.webp", "audio": "assets/sounds/orange.mp3"}
+        ],
+        "answer": "バナナ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "おれんじいろのくだものはどれ？",
+        "question_audio": "assets/sounds/orange_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "バナナ", "image": "assets/images/banana.webp", "audio": "assets/sounds/banana.mp3"},
+            {"name": "みかん", "image": "assets/images/orange.webp", "audio": "assets/sounds/orange.mp3"}
+        ],
+        "answer": "みかん"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "みみのながいどうぶつはどれ？",
+        "question_audio": "assets/sounds/rabbit_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"},
+            {"name": "うさぎ", "image": "assets/images/rabbit.webp", "audio": "assets/sounds/rabbit.mp3"}
+        ],
+        "answer": "うさぎ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "にゃーとなくどうぶつはどれ？",
+        "question_audio": "assets/sounds/cat_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"},
+            {"name": "うさぎ", "image": "assets/images/rabbit.webp", "audio": "assets/sounds/rabbit.mp3"}
+        ],
+        "answer": "ねこ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "わんわんとなくどうぶつはどれ？",
+        "question_audio": "assets/sounds/dog_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"},
+            {"name": "うさぎ", "image": "assets/images/rabbit.webp", "audio": "assets/sounds/rabbit.mp3"}
+        ],
+        "answer": "いぬ"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "はしるのりものはどれ？",
+        "question_audio": "assets/sounds/car_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "くるま", "image": "assets/images/car.webp"},
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"}
+        ],
+        "answer": "くるま"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "あまいくだものはどれ？",
+        "question_audio": "assets/sounds/apple_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "くるま", "image": "assets/images/car.webp"},
+            {"name": "いぬ", "image": "assets/images/dog.webp", "audio": "assets/sounds/dog.mp3"}
+        ],
+        "answer": "りんご"
+    },
+    {
+        "type": "multiple-choice",
+        "question": "しっぽのあるどうぶつはどれ？",
+        "question_audio": "assets/sounds/cat_question.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "options": [
+            {"name": "ねこ", "image": "assets/images/cat.webp", "audio": "assets/sounds/cat.mp3"},
+            {"name": "りんご", "image": "assets/images/apple.webp", "audio": "assets/sounds/apple.mp3"},
+            {"name": "くるま", "image": "assets/images/car.webp"}
+        ],
+        "answer": "ねこ"
+    },
+    {
+        "type": "multiple-choice",
         "question": "「りんご」はどっち？",
         "question_audio": "assets/sounds/apple_question.mp3",
         "correct_audio": "assets/sounds/correct.mp3",
@@ -89,6 +206,36 @@
     },
     {
         "type": "line-drawing",
+        "question": "どうぶつのなかまをつなごう！",
+        "question_audio": "assets/sounds/nakama_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "どうぶつ", "image": "assets/images/animal_mark05_zou.webp"}},
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}, "item2": {"name": "どうぶつ", "image": "assets/images/animal_mark05_zou.webp"}},
+            {"item1": {"name": "バナナ", "image": "assets/images/banana.webp"},"item2": {"name": "くだもの", "image": "assets/images/fruits_basket.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "くだもののなかまをつなごう！",
+        "question_audio": "assets/sounds/nakama_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "みかん", "image": "assets/images/orange.webp"}, "item2": {"name": "くだもの", "image": "assets/images/fruits_basket.webp"}},
+            {"item1": {"name": "バナナ", "image": "assets/images/banana.webp"}, "item2": {"name": "くだもの", "image": "assets/images/fruits_basket.webp"}},
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"},"item2": {"name": "どうぶつ", "image": "assets/images/animal_mark05_zou.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "のりもののなかまをつなごう！",
+        "question_audio": "assets/sounds/nakama_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "くるま", "image": "assets/images/car.webp"}, "item2": {"name": "のりもの", "image": "assets/images/kouji_road_roller.webp"}},
+            {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "くだもの", "image": "assets/images/fruits_basket.webp"}},
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"},"item2": {"name": "どうぶつ", "image": "assets/images/animal_mark05_zou.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
         "question": "おなじものを せんでつなごう！",
         "question_audio": "assets/sounds/onaji_sen.mp3",
         "pairs": [
@@ -99,12 +246,62 @@
     },
     {
         "type": "line-drawing",
+        "question": "おなじものを みつけよう！",
+        "question_audio": "assets/sounds/onaji_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "いぬ", "image": "assets/images/dog.webp"}},
+            {"item1": {"name": "りんご", "image": "assets/images/apple.webp"}, "item2": {"name": "りんご", "image": "assets/images/apple.webp"}},
+            {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "くるま", "image": "assets/images/car.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "どうじものを つなごう！",
+        "question_audio": "assets/sounds/onaji_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "みかん", "image": "assets/images/orange.webp"}, "item2": {"name": "みかん", "image": "assets/images/orange.webp"}},
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "ねこ", "image": "assets/images/cat.webp"}},
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"},"item2": {"name": "いぬ", "image": "assets/images/dog.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
         "question": "かんけいあるものを えらぼう！",
         "question_audio": "assets/sounds/kankei_sen.mp3",
         "pairs": [
             {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "さかな", "image": "assets/images/fish_maguro.webp"}},
             {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}, "item2": {"name": "にんじん", "image": "assets/images/ninjin_carrot.webp"}},
             {"item1": {"name": "くるま", "image": "assets/images/car.webp"},"item2": {"name": "どうろ", "image": "assets/images/road_douro.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "だれがたべるかな？",
+        "question_audio": "assets/sounds/kankei_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "ほね", "image": "assets/images/bone.webp"}},
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "さかな", "image": "assets/images/fish_maguro.webp"}},
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"},"item2": {"name": "にんじん", "image": "assets/images/ninjin_carrot.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "すきなたべものは？",
+        "question_audio": "assets/sounds/kankei_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"}, "item2": {"name": "にんじん", "image": "assets/images/ninjin_carrot.webp"}},
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "ほね", "image": "assets/images/bone.webp"}},
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"},"item2": {"name": "さかな", "image": "assets/images/fish_maguro.webp"}}
+        ]
+    },
+    {
+        "type": "line-drawing",
+        "question": "どうぶつとたべものをつなごう！",
+        "question_audio": "assets/sounds/kankei_sen.mp3",
+        "pairs": [
+            {"item1": {"name": "ねこ", "image": "assets/images/cat.webp"}, "item2": {"name": "さかな", "image": "assets/images/fish_maguro.webp"}},
+            {"item1": {"name": "いぬ", "image": "assets/images/dog.webp"}, "item2": {"name": "ほね", "image": "assets/images/bone.webp"}},
+            {"item1": {"name": "うさぎ", "image": "assets/images/rabbit.webp"},"item2": {"name": "にんじん", "image": "assets/images/ninjin_carrot.webp"}}
         ]
     },
     {
@@ -147,6 +344,88 @@
         ]
     },
     {
+        "type": "maze",
+        "question": "みちをとおってゴールへ！",
+        "map": [
+            ["S", 0, 1, 0, 0, 0, 1, 1],
+            [1, 0, 1, 0, 1, 0, 0, 1],
+            [1, 0, 0, 0, 1, 1, 0, 1],
+            [1, 1, 1, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
+        "type": "maze",
+        "question": "めいろをクリアしよう！",
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, "S", 0, 0, 1, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 1, 1, 0, 1, 1, 1, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
+        "type": "maze",
+        "question": "スタートからゴールまで！",
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, "S", 0, 1, 0, 0, 0, 0, 0, 1],
+            [1, 1, 0, 1, 0, 1, 1, 1, 0, 1],
+            [1, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 1, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
+        "type": "maze",
+        "question": "ながいみちをとおろう！",
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, "S", 0, 0, 0, 1, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 1, 1, 1, 1, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
+        "type": "maze",
+        "question": "かんたんなめいろ！",
+        "map": [
+            [1, 1, 1, 1, 1, 1],
+            [1, "S", 0, 0, 0, 1],
+            [1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, "G", 1],
+            [1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
+        "type": "maze",
+        "question": "むずかしいめいろ！",
+        "map": [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, "S", 0, 1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, "G", 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+    },
+    {
         "type": "counting",
         "question": "りんごはいくつあるかな？",
         "question_audio": "assets/sounds/how_many_apples.mp3",
@@ -180,105 +459,597 @@
         "answer": 4
     },
     {
+        "type": "counting",
+        "question": "バナナはいくつあるかな？",
+        "question_audio": "assets/sounds/how_many_bananas.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/banana.webp",
+        "item_count": 3,
+        "options": [2, 3, 4, 5],
+        "answer": 3
+    },
+    {
+        "type": "counting",
+        "question": "ねこはなんびきいるかな？",
+        "question_audio": "assets/sounds/how_many_cats.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/cat.webp",
+        "item_count": 6,
+        "options": [4, 5, 6, 7],
+        "answer": 6
+    },
+    {
+        "type": "counting",
+        "question": "いぬはなんびきいるかな？",
+        "question_audio": "assets/sounds/how_many_dogs.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/dog.webp",
+        "item_count": 2,
+        "options": [1, 2, 3, 4],
+        "answer": 2
+    },
+    {
+        "type": "counting",
+        "question": "うさぎはなんびきいるかな？",
+        "question_audio": "assets/sounds/how_many_rabbits.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/rabbit.webp",
+        "item_count": 8,
+        "options": [6, 7, 8, 9],
+        "answer": 8
+    },
+    {
+        "type": "counting",
+        "question": "はなはいくつあるかな？",
+        "question_audio": "assets/sounds/how_many_flowers.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/flower.webp",
+        "item_count": 9,
+        "options": [7, 8, 9, 10],
+        "answer": 9
+    },
+    {
+        "type": "counting",
+        "question": "ほしはいくつあるかな？",
+        "question_audio": "assets/sounds/how_many_stars.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/star.webp",
+        "item_count": 10,
+        "options": [8, 9, 10, 11],
+        "answer": 10
+    },
+    {
+        "type": "counting",
+        "question": "ボールはいくつあるかな？",
+        "question_audio": "assets/sounds/how_many_balls.mp3",
+        "correct_audio": "assets/sounds/correct.mp3",
+        "incorrect_audio": "assets/sounds/incorrect.mp3",
+        "item_image": "assets/images/ball.webp",
+        "item_count": 1,
+        "options": [1, 2, 3, 4],
+        "answer": 1
+    },
+    {
         "type": "character-tracing",
         "character": "あ",
-        "question": "「あ」を かくよ",
-        "start_audio": "assets/sounds/write_a_start.mp3",
-        "end_audio": "assets/sounds/a_is_for_arigatou.mp3",
-        "example_word": "ありがとう",
+        "question": "『あ』をなぞってみよう！",
+        "question_audio": "assets/sounds/a_nazotte.mp3",
+        "example_words": ["あり", "あめ", "あか"],
         "strokes": [
-            [
-                {"x": 200, "y": 120},
-                {"x": 200, "y": 160},
-                {"x": 200, "y": 200},
-                {"x": 200, "y": 240},
-                {"x": 200, "y": 280},
-                {"x": 200, "y": 320},
-                {"x": 200, "y": 360}
-            ],
-            [
-                {"x": 150, "y": 180},
-                {"x": 180, "y": 180},
-                {"x": 220, "y": 180},
-                {"x": 260, "y": 180},
-                {"x": 300, "y": 180},
-                {"x": 340, "y": 180}
-            ],
-            [
-                {"x": 240, "y": 190},
-                {"x": 270, "y": 210},
-                {"x": 290, "y": 240},
-                {"x": 300, "y": 270},
-                {"x": 290, "y": 300},
-                {"x": 270, "y": 320},
-                {"x": 240, "y": 330},
-                {"x": 210, "y": 320},
-                {"x": 190, "y": 300},
-                {"x": 180, "y": 270},
-                {"x": 180, "y": 240},
-                {"x": 190, "y": 220},
-                {"x": 210, "y": 210},
-                {"x": 230, "y": 210}
-            ]
+            {
+                "points": [
+                    {"x": 50, "y": 30},
+                    {"x": 80, "y": 50},
+                    {"x": 70, "y": 80}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 60},
+                    {"x": 90, "y": 60}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 90},
+                    {"x": 80, "y": 90}
+                ]
+            }
         ]
     },
     {
         "type": "character-tracing",
         "character": "い",
-        "question": "「い」を かくよ",
-        "start_audio": "assets/sounds/write_i_start.mp3",
-        "end_audio": "assets/sounds/i_is_for_itumo.mp3",
-        "example_word": "いつも",
+        "question": "『い』をなぞってみよう！",
+        "question_audio": "assets/sounds/i_nazotte.mp3",
+        "example_words": ["いぬ", "いえ", "いろ"],
         "strokes": [
-            [
-                {"x": 180, "y": 140},
-                {"x": 200, "y": 130},
-                {"x": 230, "y": 130},
-                {"x": 260, "y": 140},
-                {"x": 280, "y": 160},
-                {"x": 290, "y": 190},
-                {"x": 290, "y": 220},
-                {"x": 280, "y": 250},
-                {"x": 260, "y": 270},
-                {"x": 230, "y": 280},
-                {"x": 200, "y": 280},
-                {"x": 180, "y": 270}
-            ],
-            [
-                {"x": 320, "y": 160},
-                {"x": 330, "y": 180},
-                {"x": 340, "y": 210},
-                {"x": 340, "y": 240},
-                {"x": 330, "y": 270},
-                {"x": 310, "y": 290},
-                {"x": 290, "y": 300}
-            ]
+            {
+                "points": [
+                    {"x": 40, "y": 20},
+                    {"x": 40, "y": 90}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 70, "y": 30},
+                    {"x": 70, "y": 80}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "う",
+        "question": "『う』をなぞってみよう！",
+        "question_audio": "assets/sounds/u_nazotte.mp3",
+        "example_words": ["うま", "うみ", "うし"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 40},
+                    {"x": 80, "y": 40}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 60},
+                    {"x": 70, "y": 80},
+                    {"x": 40, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "え",
+        "question": "『え』をなぞってみよう！",
+        "question_audio": "assets/sounds/e_nazotte.mp3",
+        "example_words": ["えび", "えき", "えん"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 70},
+                    {"x": 80, "y": 70}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 85},
+                    {"x": 70, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "お",
+        "question": "『お』をなぞってみよう！",
+        "question_audio": "assets/sounds/o_nazotte.mp3",
+        "example_words": ["おに", "おか", "おと"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 90}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 70},
+                    {"x": 80, "y": 70}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "か",
+        "question": "『か』をなぞってみよう！",
+        "question_audio": "assets/sounds/ka_nazotte.mp3",
+        "example_words": ["かに", "かみ", "かお"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "き",
+        "question": "『き』をなぞってみよう！",
+        "question_audio": "assets/sounds/ki_nazotte.mp3",
+        "example_words": ["きつね", "きのこ", "きいろ"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 90}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 70},
+                    {"x": 80, "y": 70}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "く",
+        "question": "『く』をなぞってみよう！",
+        "question_audio": "assets/sounds/ku_nazotte.mp3",
+        "example_words": ["くま", "くるま", "くも"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 40},
+                    {"x": 50, "y": 60},
+                    {"x": 80, "y": 40}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "け",
+        "question": "『け』をなぞってみよう！",
+        "question_audio": "assets/sounds/ke_nazotte.mp3",
+        "example_words": ["けーき", "けむり", "けが"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 70}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 85},
+                    {"x": 80, "y": 85}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "こ",
+        "question": "『こ』をなぞってみよう！",
+        "question_audio": "assets/sounds/ko_nazotte.mp3",
+        "example_words": ["こども", "ここ", "こえ"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 40},
+                    {"x": 80, "y": 40}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 70},
+                    {"x": 80, "y": 70}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "さ",
+        "question": "『さ』をなぞってみよう！",
+        "question_audio": "assets/sounds/sa_nazotte.mp3",
+        "example_words": ["さかな", "さくら", "さる"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "し",
+        "question": "『し』をなぞってみよう！",
+        "question_audio": "assets/sounds/shi_nazotte.mp3",
+        "example_words": ["しろ", "しお", "しか"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 40, "y": 30},
+                    {"x": 50, "y": 50},
+                    {"x": 60, "y": 70},
+                    {"x": 70, "y": 90}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 80},
+                    {"x": 80, "y": 80}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "す",
+        "question": "『す』をなぞってみよう！",
+        "question_audio": "assets/sounds/su_nazotte.mp3",
+        "example_words": ["すし", "すいか", "すずき"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 70},
+                    {"x": 70, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "せ",
+        "question": "『せ』をなぞってみよう！",
+        "question_audio": "assets/sounds/se_nazotte.mp3",
+        "example_words": ["せんせい", "せかい", "せみ"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 70}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 85},
+                    {"x": 80, "y": 85}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "そ",
+        "question": "『そ』をなぞってみよう！",
+        "question_audio": "assets/sounds/so_nazotte.mp3",
+        "example_words": ["そら", "そば", "そふと"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 50, "y": 50},
+                    {"x": 70, "y": 70},
+                    {"x": 80, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "た",
+        "question": "『た』をなぞってみよう！",
+        "question_audio": "assets/sounds/ta_nazotte.mp3",
+        "example_words": ["たまご", "たこ", "たぬき"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 40, "y": 50},
+                    {"x": 70, "y": 50}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 90}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 70},
+                    {"x": 80, "y": 70}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "ち",
+        "question": "『ち』をなぞってみよう！",
+        "question_audio": "assets/sounds/chi_nazotte.mp3",
+        "example_words": ["ちいさい", "ちず", "ちから"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 50},
+                    {"x": 70, "y": 70},
+                    {"x": 80, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "つ",
+        "question": "『つ』をなぞってみよう！",
+        "question_audio": "assets/sounds/tsu_nazotte.mp3",
+        "example_words": ["つき", "つめ", "つくえ"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 40},
+                    {"x": 50, "y": 30},
+                    {"x": 70, "y": 50},
+                    {"x": 60, "y": 80},
+                    {"x": 40, "y": 90}
+                ]
+            }
         ]
     },
     {
         "type": "character-tracing",
         "character": "て",
-        "question": "「て」を かくよ",
-        "start_audio": "assets/sounds/write_te_start.mp3",
-        "end_audio": "assets/sounds/te_is_for_te.mp3",
-        "example_word": "て",
+        "question": "『て』をなぞってみよう！",
+        "question_audio": "assets/sounds/te_nazotte.mp3",
+        "example_words": ["て", "てがみ", "てんき"],
         "strokes": [
-            [
-                {"x": 160, "y": 180},
-                {"x": 200, "y": 180},
-                {"x": 240, "y": 180},
-                {"x": 280, "y": 180},
-                {"x": 320, "y": 180}
-            ],
-            [
-                {"x": 320, "y": 180},
-                {"x": 310, "y": 210},
-                {"x": 290, "y": 240},
-                {"x": 260, "y": 270},
-                {"x": 220, "y": 290},
-                {"x": 180, "y": 300},
-                {"x": 150, "y": 290}
-            ]
+            {
+                "points": [
+                    {"x": 30, "y": 40},
+                    {"x": 80, "y": 40}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 80, "y": 40},
+                    {"x": 70, "y": 60},
+                    {"x": 50, "y": 80},
+                    {"x": 30, "y": 90}
+                ]
+            }
+        ]
+    },
+    {
+        "type": "character-tracing",
+        "character": "と",
+        "question": "『と』をなぞってみよう！",
+        "question_audio": "assets/sounds/to_nazotte.mp3",
+        "example_words": ["とり", "とけい", "ともだち"],
+        "strokes": [
+            {
+                "points": [
+                    {"x": 30, "y": 30},
+                    {"x": 80, "y": 30}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 50, "y": 20},
+                    {"x": 50, "y": 90}
+                ]
+            },
+            {
+                "points": [
+                    {"x": 30, "y": 70},
+                    {"x": 80, "y": 70}
+                ]
+            }
         ]
     }
 ]

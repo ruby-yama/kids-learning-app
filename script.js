@@ -45,6 +45,14 @@ document.querySelectorAll('.back-button').forEach(button => {
     });
 });
 
+// Number panel back button
+const numberPanelBackButton = document.querySelector('.number-drop-back-button');
+if (numberPanelBackButton) {
+    numberPanelBackButton.addEventListener('click', () => {
+        showScreen('game-selection');
+    });
+}
+
 // --- Core Game Logic ---
 
 async function fetchQuestions() {
@@ -101,6 +109,25 @@ async function startGame(gameType) {
     } else if (gameType === 'number-drop') {
         showScreen('number-drop');
         initNumberDropGame();
+    } else if (gameType === 'dot-connect') {
+        showScreen('dot-connect');
+        initDotConnectGame();
+    } else if (gameType === 'letter-trace') {
+        showScreen('letter-trace');
+        initLetterTraceGame();
+    } else if (gameType === 'dot-trace') {
+        showScreen('dot-trace');
+        initDotTraceGame();
+
+    } else if (gameType === 'spot-difference') {
+        showScreen('spot-difference');
+        initSpotDifferenceGame();
+    } else if (gameType === 'simple-maze') {
+        showScreen('simple-maze');
+        initSimpleMazeGame();
+    } else if (gameType === 'coloring') {
+        showScreen('coloring');
+        initColoringGame();
     }
 }
 
@@ -1263,4 +1290,1187 @@ function completeNumberDropGame() {
     setTimeout(() => {
         showScreen('reward');
     }, 500);
+}
+
+// --- Dot Connect Game (Apple Drawing) ---
+let dotConnectState = {
+    canvas: null,
+    ctx: null,
+    dots: [],
+    connections: [],
+    currentPath: [],
+    isDrawing: false,
+    completed: false
+};
+
+function initDotConnectGame() {
+    dotConnectState.canvas = document.getElementById('dot-connect-canvas');
+    dotConnectState.ctx = dotConnectState.canvas.getContext('2d');
+    dotConnectState.dots = [];
+    dotConnectState.connections = [];
+    dotConnectState.currentPath = [];
+    dotConnectState.isDrawing = false;
+    dotConnectState.completed = false;
+    dotConnectState.dragPath = [];
+    
+    // Create apple-shaped dots
+    createAppleDots();
+    drawDotConnectGame();
+    
+    // Add event listeners
+    dotConnectState.canvas.addEventListener('mousedown', handleDotConnectMouseDown);
+    dotConnectState.canvas.addEventListener('mousemove', handleDotConnectMouseMove);
+    dotConnectState.canvas.addEventListener('mouseup', handleDotConnectMouseUp);
+    dotConnectState.canvas.addEventListener('touchstart', handleDotConnectTouchStart);
+    dotConnectState.canvas.addEventListener('touchmove', handleDotConnectTouchMove);
+    dotConnectState.canvas.addEventListener('touchend', handleDotConnectTouchEnd);
+}
+
+function createAppleDots() {
+    const centerX = dotConnectState.canvas.width / 2;
+    const centerY = dotConnectState.canvas.height / 2;
+    
+    // Apple shape dots (simplified)
+    dotConnectState.dots = [
+        {x: centerX, y: centerY - 80, number: 1, connected: false},
+        {x: centerX + 40, y: centerY - 60, number: 2, connected: false},
+        {x: centerX + 60, y: centerY - 20, number: 3, connected: false},
+        {x: centerX + 50, y: centerY + 20, number: 4, connected: false},
+        {x: centerX + 30, y: centerY + 50, number: 5, connected: false},
+        {x: centerX, y: centerY + 70, number: 6, connected: false},
+        {x: centerX - 30, y: centerY + 50, number: 7, connected: false},
+        {x: centerX - 50, y: centerY + 20, number: 8, connected: false},
+        {x: centerX - 60, y: centerY - 20, number: 9, connected: false},
+        {x: centerX - 40, y: centerY - 60, number: 10, connected: false},
+        {x: centerX - 10, y: centerY - 100, number: 11, connected: false}, // stem
+        {x: centerX + 20, y: centerY - 110, number: 12, connected: false}  // leaf
+    ];
+}
+
+function drawDotConnectGame() {
+    dotConnectState.ctx.clearRect(0, 0, dotConnectState.canvas.width, dotConnectState.canvas.height);
+    
+    // Draw connections
+    dotConnectState.ctx.strokeStyle = '#ff4500';
+    dotConnectState.ctx.lineWidth = 3;
+    dotConnectState.connections.forEach(connection => {
+        dotConnectState.ctx.beginPath();
+        dotConnectState.ctx.moveTo(connection.from.x, connection.from.y);
+        dotConnectState.ctx.lineTo(connection.to.x, connection.to.y);
+        dotConnectState.ctx.stroke();
+    });
+    
+    // Draw current drag path
+    if (dotConnectState.dragPath.length > 1) {
+        dotConnectState.ctx.strokeStyle = '#ffa500';
+        dotConnectState.ctx.lineWidth = 2;
+        dotConnectState.ctx.beginPath();
+        dotConnectState.ctx.moveTo(dotConnectState.dragPath[0].x, dotConnectState.dragPath[0].y);
+        for (let i = 1; i < dotConnectState.dragPath.length; i++) {
+            dotConnectState.ctx.lineTo(dotConnectState.dragPath[i].x, dotConnectState.dragPath[i].y);
+        }
+        dotConnectState.ctx.stroke();
+    }
+    
+    // Draw dots
+    dotConnectState.dots.forEach(dot => {
+        dotConnectState.ctx.beginPath();
+        dotConnectState.ctx.arc(dot.x, dot.y, 15, 0, 2 * Math.PI);
+        dotConnectState.ctx.fillStyle = dot.connected ? '#28a745' : '#007bff';
+        dotConnectState.ctx.fill();
+        dotConnectState.ctx.strokeStyle = '#333';
+        dotConnectState.ctx.lineWidth = 2;
+        dotConnectState.ctx.stroke();
+        
+        // Draw number
+        dotConnectState.ctx.fillStyle = '#fff';
+        dotConnectState.ctx.font = 'bold 14px Arial';
+        dotConnectState.ctx.textAlign = 'center';
+        dotConnectState.ctx.fillText(dot.number, dot.x, dot.y + 5);
+    });
+}
+
+function handleDotConnectMouseDown(e) {
+    const rect = dotConnectState.canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    startDotConnect(x, y);
+}
+
+function handleDotConnectTouchStart(e) {
+    e.preventDefault();
+    const rect = dotConnectState.canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    startDotConnect(x, y);
+}
+
+function startDotConnect(x, y) {
+    const clickedDot = findNearestDot(x, y);
+    if (clickedDot && !dotConnectState.completed) {
+        if (dotConnectState.currentPath.length === 0 && clickedDot.number === 1) {
+            dotConnectState.isDrawing = true;
+            dotConnectState.currentPath.push(clickedDot);
+            clickedDot.connected = true;
+            dotConnectState.dragPath = [{x, y}];
+            playAudio(`assets/sounds/${clickedDot.number}.mp3`);
+            drawDotConnectGame();
+        }
+    }
+}
+
+function continueDotConnect(x, y) {
+    if (!dotConnectState.isDrawing || dotConnectState.completed) return;
+    
+    dotConnectState.dragPath.push({x, y});
+    
+    const nearestDot = findNearestDot(x, y);
+    if (nearestDot && !nearestDot.connected) {
+        const expectedNumber = dotConnectState.currentPath[dotConnectState.currentPath.length - 1].number + 1;
+        if (nearestDot.number === expectedNumber) {
+            dotConnectState.currentPath.push(nearestDot);
+            nearestDot.connected = true;
+            
+            dotConnectState.connections.push({
+                from: dotConnectState.currentPath[dotConnectState.currentPath.length - 2],
+                to: nearestDot
+            });
+            
+            playAudio(`assets/sounds/${nearestDot.number}.mp3`);
+            
+            if (dotConnectState.currentPath.length === dotConnectState.dots.length) {
+                completeDotConnectGame();
+            }
+        }
+    }
+    
+    drawDotConnectGame();
+}
+
+function endDotConnect() {
+    dotConnectState.isDrawing = false;
+    dotConnectState.dragPath = [];
+    drawDotConnectGame();
+}
+
+function findNearestDot(x, y) {
+    for (let dot of dotConnectState.dots) {
+        const distance = Math.sqrt((x - dot.x) ** 2 + (y - dot.y) ** 2);
+        if (distance <= 20) {
+            return dot;
+        }
+    }
+    return null;
+}
+
+function completeDotConnectGame() {
+    dotConnectState.completed = true;
+    
+    // Draw apple shape
+    dotConnectState.ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+    dotConnectState.ctx.beginPath();
+    dotConnectState.ctx.moveTo(dotConnectState.dots[0].x, dotConnectState.dots[0].y);
+    for (let i = 1; i < dotConnectState.dots.length - 2; i++) {
+        dotConnectState.ctx.lineTo(dotConnectState.dots[i].x, dotConnectState.dots[i].y);
+    }
+    dotConnectState.ctx.closePath();
+    dotConnectState.ctx.fill();
+    
+    playAudio('assets/sounds/よくできました.mp3');
+    
+    setTimeout(() => {
+        showScreen('game-selection');
+    }, 3000);
+}
+
+// --- Letter Trace Game ---
+let letterTraceState = {
+    canvas: null,
+    ctx: null,
+    currentLetter: 'あ',
+    letters: ['あ', 'い'],
+    currentLetterIndex: 0,
+    tracePath: [],
+    allTracePaths: [],
+    isTracing: false,
+    completed: false
+};
+
+function initLetterTraceGame() {
+    letterTraceState.canvas = document.getElementById('letter-trace-canvas');
+    letterTraceState.ctx = letterTraceState.canvas.getContext('2d');
+    letterTraceState.tracePath = [];
+    letterTraceState.allTracePaths = [];
+    letterTraceState.isTracing = false;
+    letterTraceState.completed = false;
+    letterTraceState.currentLetterIndex = 0;
+    letterTraceState.currentLetter = letterTraceState.letters[0];
+    
+    drawLetterTraceGame();
+    
+    // Add event listeners
+    letterTraceState.canvas.addEventListener('mousedown', handleLetterTraceMouseDown);
+    letterTraceState.canvas.addEventListener('mousemove', handleLetterTraceMouseMove);
+    letterTraceState.canvas.addEventListener('mouseup', handleLetterTraceMouseUp);
+    letterTraceState.canvas.addEventListener('touchstart', handleLetterTraceTouchStart);
+    letterTraceState.canvas.addEventListener('touchmove', handleLetterTraceTouchMove);
+    letterTraceState.canvas.addEventListener('touchend', handleLetterTraceTouchEnd);
+}
+
+function drawLetterTraceGame() {
+    letterTraceState.ctx.clearRect(0, 0, letterTraceState.canvas.width, letterTraceState.canvas.height);
+    
+    // Draw letter outline
+    letterTraceState.ctx.strokeStyle = '#ccc';
+    letterTraceState.ctx.lineWidth = 8;
+    letterTraceState.ctx.font = 'bold 200px serif';
+    letterTraceState.ctx.textAlign = 'center';
+    letterTraceState.ctx.strokeText(letterTraceState.currentLetter, letterTraceState.canvas.width / 2, letterTraceState.canvas.height / 2 + 70);
+    
+    // Draw all previous trace paths
+    letterTraceState.allTracePaths.forEach(path => {
+        if (path.length > 1) {
+            letterTraceState.ctx.strokeStyle = '#ff4500';
+            letterTraceState.ctx.lineWidth = 6;
+            letterTraceState.ctx.beginPath();
+            letterTraceState.ctx.moveTo(path[0].x, path[0].y);
+            for (let i = 1; i < path.length; i++) {
+                letterTraceState.ctx.lineTo(path[i].x, path[i].y);
+            }
+            letterTraceState.ctx.stroke();
+        }
+    });
+    
+    // Draw current traced path
+    if (letterTraceState.tracePath.length > 1) {
+        letterTraceState.ctx.strokeStyle = '#ff4500';
+        letterTraceState.ctx.lineWidth = 6;
+        letterTraceState.ctx.beginPath();
+        letterTraceState.ctx.moveTo(letterTraceState.tracePath[0].x, letterTraceState.tracePath[0].y);
+        for (let i = 1; i < letterTraceState.tracePath.length; i++) {
+            letterTraceState.ctx.lineTo(letterTraceState.tracePath[i].x, letterTraceState.tracePath[i].y);
+        }
+        letterTraceState.ctx.stroke();
+    }
+}
+
+function handleLetterTraceMouseDown(e) {
+    const rect = letterTraceState.canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    startLetterTrace(x, y);
+}
+
+function handleLetterTraceMouseMove(e) {
+    if (letterTraceState.isTracing) {
+        const rect = letterTraceState.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        continueLetterTrace(x, y);
+    }
+}
+
+function handleLetterTraceMouseUp() {
+    endLetterTrace();
+}
+
+function handleLetterTraceTouchStart(e) {
+    e.preventDefault();
+    const rect = letterTraceState.canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    startLetterTrace(x, y);
+}
+
+function handleLetterTraceTouchMove(e) {
+    e.preventDefault();
+    if (letterTraceState.isTracing) {
+        const rect = letterTraceState.canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        continueLetterTrace(x, y);
+    }
+}
+
+function handleLetterTraceTouchEnd(e) {
+    e.preventDefault();
+    endLetterTrace();
+}
+
+function startLetterTrace(x, y) {
+    letterTraceState.isTracing = true;
+    letterTraceState.tracePath = [{x, y}];
+}
+
+function continueLetterTrace(x, y) {
+    letterTraceState.tracePath.push({x, y});
+    drawLetterTraceGame();
+}
+
+function endLetterTrace() {
+    letterTraceState.isTracing = false;
+    
+    if (letterTraceState.tracePath.length > 20) {
+        // Save current trace path
+        letterTraceState.allTracePaths.push([...letterTraceState.tracePath]);
+        letterTraceState.tracePath = [];
+        
+        // Check if we should move to next letter
+        if (letterTraceState.allTracePaths.length >= 3) {
+            if (letterTraceState.currentLetterIndex < letterTraceState.letters.length - 1) {
+                // Move to next letter
+                letterTraceState.currentLetterIndex++;
+                letterTraceState.currentLetter = letterTraceState.letters[letterTraceState.currentLetterIndex];
+                letterTraceState.allTracePaths = [];
+                drawLetterTraceGame();
+            } else {
+                // All letters completed
+                completeLetterTrace();
+            }
+        }
+    }
+}
+
+function completeLetterTrace() {
+    letterTraceState.completed = true;
+    playAudio('assets/sounds/よくできました.mp3');
+    
+    setTimeout(() => {
+        showScreen('game-selection');
+    }, 2000);
+}
+
+// --- Dot Trace Game ---
+let dotTraceState = {
+    canvas: null,
+    ctx: null,
+    dots: [],
+    tracePath: [],
+    isTracing: false,
+    completed: false
+};
+
+function initDotTraceGame() {
+    dotTraceState.canvas = document.getElementById('dot-trace-canvas');
+    dotTraceState.ctx = dotTraceState.canvas.getContext('2d');
+    dotTraceState.tracePath = [];
+    dotTraceState.isTracing = false;
+    dotTraceState.completed = false;
+    
+    createStarDots();
+    drawDotTraceGame();
+    
+    // Add event listeners
+    dotTraceState.canvas.addEventListener('mousedown', handleDotTraceMouseDown);
+    dotTraceState.canvas.addEventListener('mousemove', handleDotTraceMouseMove);
+    dotTraceState.canvas.addEventListener('mouseup', handleDotTraceMouseUp);
+    dotTraceState.canvas.addEventListener('touchstart', handleDotTraceTouchStart);
+    dotTraceState.canvas.addEventListener('touchmove', handleDotTraceTouchMove);
+    dotTraceState.canvas.addEventListener('touchend', handleDotTraceTouchEnd);
+}
+
+function createStarDots() {
+    const centerX = dotTraceState.canvas.width / 2;
+    const centerY = dotTraceState.canvas.height / 2;
+    const radius = 100;
+    
+    dotTraceState.dots = [];
+    
+    // Create star pattern dots
+    for (let i = 0; i < 10; i++) {
+        const angle = (i * Math.PI * 2) / 10;
+        const r = i % 2 === 0 ? radius : radius * 0.5;
+        const x = centerX + Math.cos(angle - Math.PI / 2) * r;
+        const y = centerY + Math.sin(angle - Math.PI / 2) * r;
+        dotTraceState.dots.push({x, y, visited: false});
+    }
+}
+
+function drawDotTraceGame() {
+    dotTraceState.ctx.clearRect(0, 0, dotTraceState.canvas.width, dotTraceState.canvas.height);
+    
+    // Draw dots
+    dotTraceState.dots.forEach((dot, index) => {
+        dotTraceState.ctx.beginPath();
+        dotTraceState.ctx.arc(dot.x, dot.y, 12, 0, 2 * Math.PI);
+        dotTraceState.ctx.fillStyle = dot.visited ? '#28a745' : '#ffc107';
+        dotTraceState.ctx.fill();
+        dotTraceState.ctx.strokeStyle = '#333';
+        dotTraceState.ctx.lineWidth = 2;
+        dotTraceState.ctx.stroke();
+    });
+    
+    // Draw traced path
+    if (dotTraceState.tracePath.length > 1) {
+        dotTraceState.ctx.strokeStyle = '#ff4500';
+        dotTraceState.ctx.lineWidth = 4;
+        dotTraceState.ctx.beginPath();
+        dotTraceState.ctx.moveTo(dotTraceState.tracePath[0].x, dotTraceState.tracePath[0].y);
+        for (let i = 1; i < dotTraceState.tracePath.length; i++) {
+            dotTraceState.ctx.lineTo(dotTraceState.tracePath[i].x, dotTraceState.tracePath[i].y);
+        }
+        dotTraceState.ctx.stroke();
+    }
+}
+
+function handleDotTraceMouseDown(e) {
+    const rect = dotTraceState.canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    startDotTrace(x, y);
+}
+
+function handleDotTraceMouseMove(e) {
+    if (dotTraceState.isTracing) {
+        const rect = dotTraceState.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        continueDotTrace(x, y);
+    }
+}
+
+function handleDotTraceMouseUp() {
+    endDotTrace();
+}
+
+function handleDotTraceTouchStart(e) {
+    e.preventDefault();
+    const rect = dotTraceState.canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    startDotTrace(x, y);
+}
+
+function handleDotTraceTouchMove(e) {
+    e.preventDefault();
+    if (dotTraceState.isTracing) {
+        const rect = dotTraceState.canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        continueDotTrace(x, y);
+    }
+}
+
+function handleDotTraceTouchEnd(e) {
+    e.preventDefault();
+    endDotTrace();
+}
+
+function startDotTrace(x, y) {
+    dotTraceState.isTracing = true;
+    dotTraceState.tracePath = [{x, y}];
+    
+    // Check if starting near a dot
+    checkDotVisit(x, y);
+}
+
+function continueDotTrace(x, y) {
+    dotTraceState.tracePath.push({x, y});
+    checkDotVisit(x, y);
+    drawDotTraceGame();
+}
+
+function endDotTrace() {
+    dotTraceState.isTracing = false;
+    
+    // Check if all dots are visited
+    const allVisited = dotTraceState.dots.every(dot => dot.visited);
+    if (allVisited) {
+        completeDotTrace();
+    }
+}
+
+function checkDotVisit(x, y) {
+    dotTraceState.dots.forEach(dot => {
+        const distance = Math.sqrt((x - dot.x) ** 2 + (y - dot.y) ** 2);
+        if (distance <= 20 && !dot.visited) {
+            dot.visited = true;
+            playAudio('assets/sounds/correct.mp3');
+        }
+    });
+}
+
+function completeDotTrace() {
+    dotTraceState.completed = true;
+    
+    // Draw star shape
+    dotTraceState.ctx.fillStyle = 'rgba(255, 215, 0, 0.3)';
+    dotTraceState.ctx.beginPath();
+    dotTraceState.ctx.moveTo(dotTraceState.dots[0].x, dotTraceState.dots[0].y);
+    for (let i = 1; i < dotTraceState.dots.length; i++) {
+        dotTraceState.ctx.lineTo(dotTraceState.dots[i].x, dotTraceState.dots[i].y);
+    }
+    dotTraceState.ctx.closePath();
+    dotTraceState.ctx.fill();
+    
+    playAudio('assets/sounds/よくできました.mp3');
+    
+    setTimeout(() => {
+        showScreen('game-selection');
+    }, 3000);
+}
+
+function handleDotConnectMouseMove(e) {
+    if (dotConnectState.isDrawing) {
+        const rect = dotConnectState.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        continueDotConnect(x, y);
+    }
+}
+
+function handleDotConnectMouseUp() {
+    endDotConnect();
+}
+
+function handleDotConnectTouchMove(e) {
+    e.preventDefault();
+    if (dotConnectState.isDrawing) {
+        const rect = dotConnectState.canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+        continueDotConnect(x, y);
+    }
+}
+
+function handleDotConnectTouchEnd() {
+    endDotConnect();
+}
+
+// --- New Game Modes ---
+
+
+
+// Spot the Difference Game
+let spotDifferenceState = {
+    foundDifferences: [],
+    totalDifferences: 3,
+    differences: [
+        {x: 570, y: 280, radius: 25}, // 一番下の虫（蜂）の位置
+        {x: 690, y: 300, radius: 25}, // 赤い花の位置（4番目の花：450+50+3*60=630, 100+200=300）
+        {x: 700, y: 450, radius: 25}  // ねこの位置
+    ]
+};
+
+function initSpotDifferenceGame() {
+    const canvas = document.getElementById('spot-difference-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = 800;
+    canvas.height = 600;
+    
+    spotDifferenceState.foundDifferences = [];
+    
+    drawSpotDifferenceImages(ctx);
+    
+    canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        checkDifference(ctx, x, y);
+    });
+}
+
+function drawSpotDifferenceImages(ctx) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+    // Instructions
+    ctx.fillStyle = '#FFE135';
+    ctx.fillRect(200, 20, 400, 60);
+    ctx.fillStyle = 'black';
+    ctx.font = '18px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('2まいの えには、ちがう ところが 3つ あるよ。', 400, 40);
+    ctx.fillText('みつけたら、みぎの えの ちがう ところに ○を つけよう。', 400, 65);
+    
+    // Left image (ひだり)
+    drawSunflowerScene(ctx, 50, 100, false);
+    ctx.fillStyle = '#4A90E2';
+    ctx.fillRect(25, 80, 60, 30);
+    ctx.fillStyle = 'white';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('ひだり', 55, 100);
+    
+    // Right image (みぎ) with differences
+    drawSunflowerScene(ctx, 450, 100, true);
+    ctx.fillStyle = '#E74C3C';
+    ctx.fillRect(725, 80, 60, 30);
+    ctx.fillStyle = 'white';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('みぎ', 755, 100);
+    
+    // Draw found differences
+    spotDifferenceState.foundDifferences.forEach(diff => {
+        ctx.strokeStyle = '#E74C3C';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(diff.x, diff.y, diff.radius, 0, 2 * Math.PI);
+        ctx.stroke();
+    });
+}
+
+function drawSunflowerScene(ctx, offsetX, offsetY, withDifferences) {
+    // Sky background
+    ctx.fillStyle = '#87CEEB';
+    ctx.fillRect(offsetX, offsetY, 300, 400);
+    
+    // Sun
+    ctx.fillStyle = '#FFD700';
+    ctx.beginPath();
+    ctx.arc(offsetX + 80, offsetY + 60, 25, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Clouds
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.arc(offsetX + 200, offsetY + 50, 20, 0, 2 * Math.PI);
+    ctx.arc(offsetX + 220, offsetY + 50, 25, 0, 2 * Math.PI);
+    ctx.arc(offsetX + 240, offsetY + 50, 20, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Sunflowers
+    for (let i = 0; i < 4; i++) {
+        const x = offsetX + 50 + i * 60;
+        const y = offsetY + 200;
+        
+        // Petals
+        ctx.fillStyle = withDifferences && i === 3 ? '#FF6347' : '#FFD700'; // Difference: flower color
+        for (let j = 0; j < 8; j++) {
+            const angle = (j * Math.PI) / 4;
+            const petalX = x + Math.cos(angle) * 15;
+            const petalY = y + Math.sin(angle) * 15;
+            ctx.beginPath();
+            ctx.ellipse(petalX, petalY, 8, 4, angle, 0, 2 * Math.PI);
+            ctx.fill();
+        }
+        
+        // Center
+        ctx.fillStyle = '#8B4513';
+        ctx.beginPath();
+        ctx.arc(x, y, 8, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Stem
+        ctx.fillStyle = '#228B22';
+        ctx.fillRect(x - 2, y, 4, 100);
+    }
+    
+    // Ground
+    ctx.fillStyle = '#90EE90';
+    ctx.fillRect(offsetX, offsetY + 300, 300, 100);
+    
+    // Girl
+    const girlX = offsetX + 80;
+    const girlY = offsetY + 250;
+    
+    // Girl's head
+    ctx.fillStyle = '#FDBCB4';
+    ctx.beginPath();
+    ctx.arc(girlX, girlY, 20, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Girl's hair
+    ctx.fillStyle = '#8B4513';
+    ctx.beginPath();
+    ctx.arc(girlX, girlY - 5, 22, 0, Math.PI, true);
+    ctx.fill();
+    
+    // Girl's body
+    ctx.fillStyle = '#FF69B4';
+    ctx.fillRect(girlX - 15, girlY + 15, 30, 40);
+    
+    // Boy
+    const boyX = offsetX + 200;
+    const boyY = offsetY + 250;
+    
+    // Boy's head
+    ctx.fillStyle = '#FDBCB4';
+    ctx.beginPath();
+    ctx.arc(boyX, boyY, 20, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Boy's hair
+    ctx.fillStyle = '#654321';
+    ctx.beginPath();
+    ctx.arc(boyX, boyY - 5, 22, 0, Math.PI, true);
+    ctx.fill();
+    
+    // Boy's body
+    ctx.fillStyle = '#4169E1';
+    ctx.fillRect(boyX - 15, boyY + 15, 30, 40);
+    
+    // Bees (difference: extra bee in right image)
+    const beePositions = withDifferences ? 
+        [{x: offsetX + 120, y: offsetY + 150}, {x: offsetX + 180, y: offsetY + 120}, {x: offsetX + 120, y: offsetY + 180}] :
+        [{x: offsetX + 120, y: offsetY + 150}, {x: offsetX + 180, y: offsetY + 120}];
+    
+    beePositions.forEach(bee => {
+        ctx.fillStyle = '#FFD700';
+        ctx.beginPath();
+        ctx.ellipse(bee.x, bee.y, 6, 4, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        ctx.fillStyle = 'black';
+        ctx.fillRect(bee.x - 2, bee.y - 1, 1, 2);
+        ctx.fillRect(bee.x + 1, bee.y - 1, 1, 2);
+    });
+    
+    // Cat (difference: position)
+    const catX = withDifferences ? offsetX + 250 : offsetX + 220;
+    const catY = offsetY + 350;
+    
+    ctx.fillStyle = 'white';
+    ctx.beginPath();
+    ctx.ellipse(catX, catY, 15, 10, 0, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    // Cat ears
+    ctx.beginPath();
+    ctx.moveTo(catX - 10, catY - 8);
+    ctx.lineTo(catX - 5, catY - 15);
+    ctx.lineTo(catX, catY - 8);
+    ctx.fill();
+    
+    ctx.beginPath();
+    ctx.moveTo(catX, catY - 8);
+    ctx.lineTo(catX + 5, catY - 15);
+    ctx.lineTo(catX + 10, catY - 8);
+    ctx.fill();
+}
+
+function checkDifference(ctx, x, y) {
+    // Only check clicks on the right side
+    if (x < 450) return;
+    
+    for (let i = 0; i < spotDifferenceState.differences.length; i++) {
+        const diff = spotDifferenceState.differences[i];
+        const distance = Math.sqrt((x - diff.x) ** 2 + (y - diff.y) ** 2);
+        
+        if (distance <= diff.radius && !spotDifferenceState.foundDifferences.some(found => found.index === i)) {
+            spotDifferenceState.foundDifferences.push({x: diff.x, y: diff.y, radius: diff.radius, index: i});
+            
+            // Play sound when difference is found
+            playAudio('assets/sounds/correct.mp3');
+            
+            // Draw the circle immediately
+            ctx.strokeStyle = '#E74C3C';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(diff.x, diff.y, diff.radius, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            if (spotDifferenceState.foundDifferences.length === spotDifferenceState.totalDifferences) {
+                playAudio('assets/sounds/よくできました.mp3');
+                setTimeout(() => {
+                    correctAnswers = spotDifferenceState.totalDifferences;
+                    showScreen('reward');
+                }, 2000);
+            }
+            break;
+        }
+    }
+}
+
+// Simple Maze Game
+let simpleMazeState = {
+    currentMazeType: 0,
+    mazeTypes: ['circle', 'diamond', 'hexagon']
+};
+
+function initSimpleMazeGame() {
+    const canvas = document.getElementById('simple-maze-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = 800;
+    canvas.height = 600;
+    
+    // Randomly select maze type
+    simpleMazeState.currentMazeType = Math.floor(Math.random() * 3);
+    const mazeType = simpleMazeState.mazeTypes[simpleMazeState.currentMazeType];
+    
+    const maze = getMazeConfig(mazeType);
+    
+    drawSimpleMaze(ctx, maze, mazeType);
+    
+    canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // Move player towards click
+        maze.player.x = x;
+        maze.player.y = y;
+        
+        drawSimpleMaze(ctx, maze, mazeType);
+        
+        // Check if reached goal
+        const distance = Math.sqrt((x - maze.goal.x) ** 2 + (y - maze.goal.y) ** 2);
+        if (distance < 30) {
+            playAudio('assets/sounds/よくできました.mp3');
+            setTimeout(() => {
+                correctAnswers = 1;
+                showScreen('reward');
+            }, 2000);
+        }
+    });
+}
+
+function getMazeConfig(mazeType) {
+    switch(mazeType) {
+        case 'circle':
+            return {
+                start: {x: 400, y: 100},
+                goal: {x: 400, y: 500},
+                player: {x: 400, y: 100}
+            };
+        case 'diamond':
+            return {
+                start: {x: 400, y: 50},
+                goal: {x: 400, y: 550},
+                player: {x: 400, y: 50}
+            };
+        case 'hexagon':
+            return {
+                start: {x: 400, y: 100},
+                goal: {x: 400, y: 500},
+                player: {x: 400, y: 100}
+            };
+        default:
+            return {
+                start: {x: 400, y: 100},
+                goal: {x: 400, y: 500},
+                player: {x: 400, y: 100}
+            };
+    }
+}
+
+function drawSimpleMaze(ctx, maze, mazeType) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 8;
+    
+    switch(mazeType) {
+        case 'circle':
+            drawCircleMaze(ctx);
+            break;
+        case 'diamond':
+            drawDiamondMaze(ctx);
+            break;
+        case 'hexagon':
+            drawHexagonMaze(ctx);
+            break;
+    }
+    
+    // Draw start
+    ctx.fillStyle = '#87CEEB';
+    ctx.fillRect(maze.start.x - 25, maze.start.y - 15, 50, 30);
+    ctx.fillStyle = '#333';
+    ctx.font = '16px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('スタート', maze.start.x, maze.start.y + 5);
+    
+    // Draw goal
+    ctx.fillStyle = '#FFB6C1';
+    ctx.fillRect(maze.goal.x - 25, maze.goal.y - 15, 50, 30);
+    ctx.fillStyle = '#333';
+    ctx.fillText('ゴール', maze.goal.x, maze.goal.y + 5);
+    
+    // Draw player
+    ctx.fillStyle = '#2196F3';
+    ctx.beginPath();
+    ctx.arc(maze.player.x, maze.player.y, 12, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
+function drawCircleMaze(ctx) {
+    const centerX = 400;
+    const centerY = 300;
+    
+    // Outer circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 200, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    // Middle circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 120, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    // Inner circle
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, 60, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    // Connecting lines and gaps
+    ctx.beginPath();
+    ctx.moveTo(centerX - 60, centerY);
+    ctx.lineTo(centerX - 120, centerY);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX + 60, centerY);
+    ctx.lineTo(centerX + 120, centerY);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - 60);
+    ctx.lineTo(centerX, centerY - 120);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY + 60);
+    ctx.lineTo(centerX, centerY + 120);
+    ctx.stroke();
+    
+    // Additional maze lines
+    ctx.beginPath();
+    ctx.moveTo(centerX - 120, centerY - 60);
+    ctx.lineTo(centerX - 60, centerY - 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX + 60, centerY - 60);
+    ctx.lineTo(centerX + 120, centerY - 60);
+    ctx.stroke();
+}
+
+function drawDiamondMaze(ctx) {
+    const centerX = 400;
+    const centerY = 300;
+    
+    // Outer diamond
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - 200);
+    ctx.lineTo(centerX + 200, centerY);
+    ctx.lineTo(centerX, centerY + 200);
+    ctx.lineTo(centerX - 200, centerY);
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Middle diamond
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - 120);
+    ctx.lineTo(centerX + 120, centerY);
+    ctx.lineTo(centerX, centerY + 120);
+    ctx.lineTo(centerX - 120, centerY);
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Inner diamond
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - 60);
+    ctx.lineTo(centerX + 60, centerY);
+    ctx.lineTo(centerX, centerY + 60);
+    ctx.lineTo(centerX - 60, centerY);
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Connecting lines
+    ctx.beginPath();
+    ctx.moveTo(centerX - 60, centerY - 30);
+    ctx.lineTo(centerX - 120, centerY - 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX + 60, centerY - 30);
+    ctx.lineTo(centerX + 120, centerY - 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX - 30, centerY + 60);
+    ctx.lineTo(centerX - 60, centerY + 120);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX + 30, centerY + 60);
+    ctx.lineTo(centerX + 60, centerY + 120);
+    ctx.stroke();
+}
+
+function drawHexagonMaze(ctx) {
+    const centerX = 400;
+    const centerY = 300;
+    
+    // Outer hexagon
+    drawHexagon(ctx, centerX, centerY, 180);
+    
+    // Middle hexagon
+    drawHexagon(ctx, centerX, centerY, 120);
+    
+    // Inner hexagon
+    drawHexagon(ctx, centerX, centerY, 60);
+    
+    // Connecting lines
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY - 60);
+    ctx.lineTo(centerX, centerY - 120);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX - 52, centerY - 30);
+    ctx.lineTo(centerX - 104, centerY - 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX + 52, centerY - 30);
+    ctx.lineTo(centerX + 104, centerY - 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX - 52, centerY + 30);
+    ctx.lineTo(centerX - 104, centerY + 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX + 52, centerY + 30);
+    ctx.lineTo(centerX + 104, centerY + 60);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY + 60);
+    ctx.lineTo(centerX, centerY + 120);
+    ctx.stroke();
+}
+
+function drawHexagon(ctx, centerX, centerY, radius) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+        const angle = (i * Math.PI) / 3;
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    }
+    ctx.closePath();
+    ctx.stroke();
+}
+
+// Coloring Game
+let coloringState = {
+    currentColor: '#FF0000',
+    isDrawing: false
+};
+
+function initColoringGame() {
+    const canvas = document.getElementById('coloring-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    canvas.width = 600;
+    canvas.height = 400;
+    
+    drawColoringOutline(ctx);
+    setupColoringTools();
+    
+    canvas.addEventListener('mousedown', startColoring);
+    canvas.addEventListener('mousemove', continueColoring);
+    canvas.addEventListener('mouseup', endColoring);
+    canvas.addEventListener('touchstart', handleColoringTouchStart);
+    canvas.addEventListener('touchmove', handleColoringTouchMove);
+    canvas.addEventListener('touchend', handleColoringTouchEnd);
+}
+
+function drawColoringOutline(ctx) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+    // Draw simple flower outline
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    
+    // Flower petals
+    for (let i = 0; i < 6; i++) {
+        const angle = (i * Math.PI) / 3;
+        const x = 300 + Math.cos(angle) * 60;
+        const y = 200 + Math.sin(angle) * 60;
+        
+        ctx.beginPath();
+        ctx.arc(x, y, 30, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+    
+    // Center
+    ctx.beginPath();
+    ctx.arc(300, 200, 25, 0, 2 * Math.PI);
+    ctx.stroke();
+    
+    // Stem
+    ctx.beginPath();
+    ctx.moveTo(300, 225);
+    ctx.lineTo(300, 350);
+    ctx.stroke();
+}
+
+function setupColoringTools() {
+    const tools = document.querySelectorAll('.coloring-tool');
+    tools.forEach(tool => {
+        tool.addEventListener('click', () => {
+            tools.forEach(t => t.classList.remove('active'));
+            tool.classList.add('active');
+            coloringState.currentColor = tool.dataset.color || tool.style.backgroundColor;
+        });
+    });
+}
+
+function startColoring(e) {
+    coloringState.isDrawing = true;
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    drawColoringPoint(e.target.getContext('2d'), x, y);
+}
+
+function continueColoring(e) {
+    if (!coloringState.isDrawing) return;
+    const rect = e.target.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    drawColoringPoint(e.target.getContext('2d'), x, y);
+}
+
+function endColoring() {
+    coloringState.isDrawing = false;
+}
+
+function drawColoringPoint(ctx, x, y) {
+    ctx.fillStyle = coloringState.currentColor;
+    ctx.beginPath();
+    ctx.arc(x, y, 8, 0, 2 * Math.PI);
+    ctx.fill();
+}
+
+function handleColoringTouchStart(e) {
+    e.preventDefault();
+    const rect = e.target.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    coloringState.isDrawing = true;
+    drawColoringPoint(e.target.getContext('2d'), x, y);
+}
+
+function handleColoringTouchMove(e) {
+    e.preventDefault();
+    if (!coloringState.isDrawing) return;
+    const rect = e.target.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    drawColoringPoint(e.target.getContext('2d'), x, y);
+}
+
+function handleColoringTouchEnd(e) {
+    e.preventDefault();
+    coloringState.isDrawing = false;
 }

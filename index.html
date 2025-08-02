@@ -26,6 +26,13 @@
                 <button class="game-select-button" data-game-type="drawing"><span class="icon">🎨</span>おえかきモード</button>
                 <button class="game-select-button" data-game-type="watermelon"><span class="icon">🍉</span>スイカゲーム</button>
                 <button class="game-select-button" data-game-type="number-drop"><span class="icon">🔢</span>すうじパネル</button>
+                <button class="game-select-button" data-game-type="dot-connect"><span class="icon">🍎</span>てんつなぎリンゴ</button>
+                <button class="game-select-button" data-game-type="letter-trace"><span class="icon">✏️</span>もじなぞり</button>
+                <button class="game-select-button" data-game-type="dot-trace"><span class="icon">⭐</span>てんなぞり</button>
+
+                <button class="game-select-button" data-game-type="spot-difference"><span class="icon">🔍</span>まちがいさがし</button>
+                <button class="game-select-button" data-game-type="simple-maze"><span class="icon">🌟</span>かんたんめいろ</button>
+                <button class="game-select-button" data-game-type="coloring"><span class="icon">🖍️</span>ぬりえ</button>
             </div>
         </div>
         <div id="question-screen" class="screen">
@@ -83,10 +90,32 @@
                 <source src="assets/sounds/backdance.MP4" type="video/mp4">
             </video>
             <button class="back-button">もどる</button>
+            <button class="number-drop-back-button">すうじパネルにもどる</button>
             <h2>すうじパネルゲーム</h2>
             <div id="number-drop-score">タップした数字: <span id="tapped-numbers">0</span>/10</div>
             <div id="number-drop-container">
                 <canvas id="number-drop-canvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+        <div id="dot-connect-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>てんをつないで リンゴをつくろう！</h2>
+            <div id="dot-connect-container">
+                <canvas id="dot-connect-canvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+        <div id="letter-trace-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>もじをなぞってみよう！</h2>
+            <div id="letter-trace-container">
+                <canvas id="letter-trace-canvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+        <div id="dot-trace-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>てんをなぞってみよう！</h2>
+            <div id="dot-trace-container">
+                <canvas id="dot-trace-canvas" width="800" height="600"></canvas>
             </div>
         </div>
         <div id="watermelon-screen" class="screen">
@@ -97,6 +126,36 @@
             </audio>
             <div class="watermelon-container">
                 <iframe id="watermelon-iframe" src="https://jolly-starburst-cd5f9a.netlify.app/" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <div id="spot-difference-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>まちがいを みつけよう！</h2>
+            <div id="spot-difference-container">
+                <canvas id="spot-difference-canvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+        <div id="simple-maze-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>かんたん めいろ</h2>
+            <div id="simple-maze-container">
+                <canvas id="simple-maze-canvas" width="800" height="600"></canvas>
+            </div>
+        </div>
+        <div id="coloring-screen" class="screen">
+            <button class="back-button">もどる</button>
+            <h2>ぬりえを たのしもう！</h2>
+            <div id="coloring-tools">
+                <button class="coloring-tool" data-color="#ff0000">🔴</button>
+                <button class="coloring-tool" data-color="#00ff00">🟢</button>
+                <button class="coloring-tool" data-color="#0000ff">🔵</button>
+                <button class="coloring-tool" data-color="#ffff00">🟡</button>
+                <button class="coloring-tool" data-color="#ff00ff">🟣</button>
+                <button class="coloring-tool" data-color="#ffa500">🟠</button>
+            </div>
+            <div id="coloring-container">
+                <canvas id="coloring-canvas" width="800" height="600"></canvas>
             </div>
         </div>
     </div>
